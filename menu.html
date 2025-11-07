@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaña Warhammer 40k: El Crisol de Varrus</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* Estilos base, fuentes, y el efecto 'grimdark-title' ya definidos */
+body {
+font-family: 'Inter', sans-serif;
+background-color: #111827;
+/* Gris oscuro */
+color: #E5E7EB;
+/* Gris claro */
+}
+
+.header-bg {
+background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
+background-size: cover;
+background-position: center;
+background-blend-mode: multiply;
+background-color: rgba(31, 41, 55, 0.7);
+/* Overlay oscuro */
+}
+
+.grimdark-title {
+font-family: 'Inter', sans-serif;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: #F9FAFB;
+text-shadow:
+0 0 5px #F9FAFB,
+0 0 10px #F9FAFB,
+0 0 20px #DC2626,
+0 0 30px #DC2626;
+animation: flicker 3s infinite alternate;
+}
+
+.card {
+background-color: #1F2937;
+border: 1px solid #374151;
+border-radius: 0.5rem;
+overflow: hidden;
+}
+
+.section-title {
+font-weight: 900;
+color: #F3F4F6;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+border-bottom: 2px solid #DC2626;
+/* Rojo */
+padding-bottom: 0.5rem;
+}
+
+/* --- ESTILOS CLAVE DEL MENÚ --- */
+#menu-lateral {
+position: sticky;
+/* Fija el menú al hacer scroll */
+top: 20px;
+background-color: #1F2937;
+border: 1px solid #374151;
+border-radius: 0.5rem;
+padding: 1rem;
+max-height: 80vh;
+overflow-y: auto;
+}
+
+#menu-lateral a {
+display: block;
+padding: 0.75rem 1rem;
+margin-bottom: 0.5rem;
+border-radius: 0.25rem;
+text-decoration: none;
+font-weight: 700;
+color: #D1D5DB;
+transition: background-color 0.2s, color 0.2s;
+border-left: 4px solid transparent; /* Base para el color de facción */
+}
+
+#menu-lateral a:hover {
+background-color: #374151;
+color: #F9FAFB;
+transform: translateX(5px);
+}
+
+/* Clases de color para las facciones */
+.faction-sm { border-left-color: #3B82F6; } /* Azul para Space Marines */
+.faction-ig { border-left-color: #10B981; } /* Verde para Imperial Guard */
+.faction-we { border-left-color: #EF4444; } /* Rojo para World Eaters */
+.faction-dr { border-left-color: #A855F7; } /* Púrpura para Drukhari */
+
+.stat-box {
+background-color: #374151;
+padding: 0.5rem 1rem;
+border-radius: 0.25rem;
+font-weight: 700;
+text-align: center;
+}
+
+.stat-box span {
+display: block;
+font-size: 1.5rem;
+line-height: 1;
+color: #F9FAFB;
+}
+
+.welcome-card-icon {
+color: #DC2626; /* Rojo de acento */
+font-size: 2.5rem;
+margin-bottom: 1rem;
+}
+
+</style>
+</head>
+
+<body class="antialiased">
+
+<header class="header-bg relative">
+<div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+<div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
+<h1 class="grimdark-title text-4xl sm:text-5xl md:text-6xl">
+Campaña: El Crisol de Varrus
+</h1>
+<p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+Un Mundo Forja al borde de la guerra. Traición, sangre y acero os esperan.
+</p>
+</div>
+</header>
+
+<main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+<h2 class="section-title text-3xl mb-8">Archivos de la Cruzada</h2>
+
+<div class="flex flex-col lg:flex-row gap-8">
+
+<aside id="menu-lateral" class="w-full lg:w-1/4">
+<h3 class="text-2xl font-bold mb-4 text-red-400">Fuerzas de Combate</h3>
+<nav>
+<a href="ob_sm.html" class="faction-sm">🛡️ Space Marines (Astartes)</a>
+<a href="ob_ig.html" class="faction-ig">⚙️ Astra Militarum (Guardia Imperial)</a>
+<a href="ob_we.html" class="faction-we">🩸 World Eaters</a>
+<a href="ob_dr.html" class="faction-dr">🌑 Drukhari</a>
+</nav>
+<div class="mt-8 pt-4 border-t border-gray-700">
+<h3 class="text-xl font-bold mb-4 text-gray-300">Reglas de Campaña</h3>
+<nav>
+<a href="#reglas-campana" class="border-l-4 border-gray-500">📜 Reglas Adicionales</a>
+<a href="#progresion-campana" class="border-l-4 border-gray-500">🏆 Progresión y Agendas</a>
+</nav>
+</div>
+</aside>
+
+<div class="w-full lg:w-3/4 space-y-12">
+
+<section class="card p-6">
+<div class="welcome-card-icon">⚙️</div>
+<h3 class="text-3xl font-bold text-gray-300 mb-4">Tablero de Mando Central</h3>
+<p class="text-lg text-gray-400 mb-4">Selecciona una fuerza en el menú lateral para acceder a su **Hoja de Orden de Batalla** y gestionar los registros de Cruzada (XP, PC, Bajas).</p>
+<p class="text-sm text-gray-500">Actualmente, solo la lista de **Space Marines** está conectada a la base de datos dinámica.</p>
+</section>
+
+</div>
+
+</div>
+
+<section class="mb-12 mt-12 pt-8 border-t border-gray-700">
+<h2 class="section-title text-3xl mb-6" id="reglas-campana">Prólogo: El Mundo Forja Manchado</h2>
+<div class="space-y-4 text-lg text-gray-300">
+<p>
+<strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja, dominadas por la capital, la <strong>Aguja Adamantina</strong>, producen armas y blindados para una docena de cruzadas imperiales.
+</p>
+<p>
+Pero Hephaestos VII guarda un secreto. No está gobernado por el Adeptus Mechanicus, sino por un antiguo linaje de Rogue Traders, los Varrus. El actual regente, el Gobernador-Magnate Kael Varrus, es un hombre consumido por la paranoia y el deseo de inmortalidad. Para mantener su poder y su vida, ha forjado un pacto oscuro.
+</p>
+</div>
+</section>
+
+<section id="progresion-campana" class="mb-12">
+<h2 class="section-title text-3xl mb-6">Progresión de Campaña</h2>
+</section>
+
+</main>
+
+<footer class="bg-gray-900 mt-12">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+<p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
+</div>
+</footer>
+
+</body>
+
+</html>
