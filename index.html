@@ -15,7 +15,36 @@
             color: #E5E7EB;
             /* Gris claro */
         }
+        /* --- ESTILOS CLAVE DEL MENÚ --- */
+#menu-lateral {
+position: sticky;
+/* Fija el menú al hacer scroll */
+top: 20px;
+background-color: #1F2937;
+border: 1px solid #374151;
+border-radius: 0.5rem;
+padding: 1rem;
+max-height: 80vh;
+overflow-y: auto;
+}
 
+#menu-lateral a {
+display: block;
+padding: 0.75rem 1rem;
+margin-bottom: 0.5rem;
+border-radius: 0.25rem;
+text-decoration: none;
+font-weight: 700;
+color: #D1D5DB;
+transition: background-color 0.2s, color 0.2s;
+border-left: 4px solid transparent; /* Base para el color de facción */
+}
+
+#menu-lateral a:hover {
+background-color: #374151;
+color: #F9FAFB;
+transform: translateX(5px);
+}
         .header-bg {
             background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
             background-size: cover;
@@ -202,6 +231,48 @@
     </header>
 
     <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+<h2 class="section-title text-3xl mb-8">Archivos de la Cruzada</h2>
+
+<div class="flex flex-col lg:flex-row gap-8">
+
+<aside id="menu-lateral" class="w-full lg:w-1/4">
+<h3 class="text-2xl font-bold mb-4 text-red-400">Fuerzas de Combate</h3>
+<nav>
+<a href="ob_sm.html" class="faction-sm">🛡️ Space Marines (Astartes)</a>
+<a href="ob_ig.html" class="faction-ig">⚙️ Astra Militarum (Guardia Imperial)</a>
+<a href="ob_we.html" class="faction-we">🩸 World Eaters</a>
+<a href="ob_dru.html" class="faction-dr">🌑 Drukhari</a>
+</nav>
+<div class="mt-8 pt-4 border-t border-gray-700">
+<h3 class="text-xl font-bold mb-4 text-gray-300">Reglas de Campaña</h3>
+<nav>
+<a href="#reglas-campana" class="border-l-4 border-gray-500">📜 Reglas Adicionales</a>
+<a href="#progresion-campana" class="border-l-4 border-gray-500">🏆 Progresión y Agendas</a>
+</nav>
+</div>
+</aside>
+
+<div class="w-full lg:w-3/4 space-y-12">
+
+<section class="card p-6">
+<div class="welcome-card-icon">⚙️</div>
+<h3 class="text-3xl font-bold text-gray-300 mb-4">Tablero de Mando Central</h3>
+<p class="text-lg text-gray-400 mb-4">Selecciona una fuerza en el menú lateral para acceder a su **Hoja de Orden de Batalla** y gestionar los registros de Cruzada (XP, PC, Bajas).</p>
+<p class="text-sm text-gray-500">Actualmente, solo la lista de **Space Marines** está conectada a la base de datos dinámica.</p>
+</section>
+
+</div>
+
+</div>
+
+
+
+</main>
+
+
+
     <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
         <!-- Prólogo -->
