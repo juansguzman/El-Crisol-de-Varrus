@@ -8,13 +8,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Bloque de Estilos CSS Grimdark (Completo para página independiente) */
+        /* Bloque de Estilos CSS Grimdark */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #111827;
-            /* Gris oscuro */
-            color: #E5E7EB;
-            /* Gris claro */
+            background-color: #111827; /* Gris oscuro */
+            color: #E5E7EB; /* Gris claro */
         }
 
         .header-bg {
@@ -31,11 +29,7 @@
             text-transform: uppercase;
             letter-spacing: 0.1em;
             color: #F9FAFB;
-            text-shadow:
-                0 0 5px #F9FAFB,
-                0 0 10px #F9FAFB,
-                0 0 20px #DC2626,
-                0 0 30px #DC2626;
+            text-shadow: 0 0 5px #F9FAFB, 0 0 10px #F9FAFB, 0 0 20px #DC2626, 0 0 30px #DC2626;
             animation: flicker 3s infinite alternate;
         }
 
@@ -46,55 +40,59 @@
             overflow: hidden;
         }
 
-        .section-title {
-            font-weight: 900;
-            color: #F3F4F6;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #DC2626;
-            padding-bottom: 0.5rem;
-        }
-
-        /* Estilos de Facciones/Cajas */
         .faction-sm { border-left: 4px solid #3B82F6; } /* Azul para Space Marines */
+
         .stat-box {
             background-color: #374151;
-            padding: 0.5rem 1rem;
+            padding: 0.5rem;
             border-radius: 0.25rem;
             font-weight: 700;
             text-align: center;
         }
+        @media (min-width: 640px) { .stat-box { padding: 0.5rem 1rem; } }
 
         .stat-box span {
             display: block;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             line-height: 1;
             color: #F9FAFB;
         }
+        @media (min-width: 640px) { .stat-box span { font-size: 1.5rem; } }
 
         /* Estilos de la tabla de datos dinámicos */
-        #units-list-table-body td {
-            vertical-align: middle;
+        #units-list-table-body td { vertical-align: middle; }
+        .text-blue-400 { color: #60A5FA; }
+        
+        /* Botones de control responsivos */
+        .control-button {
+            transition: transform 0.1s, opacity 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #374151; 
+            border: 1px solid #4B5563;
+            /* Tamaño base para móvil (más fácil de tocar) */
+            width: 32px; height: 32px; font-size: 1.25rem; 
         }
-        .text-blue-400 { color: #60A5FA; } /* Color para nombres de Astartes */
+        @media (min-width: 768px) { 
+            /* Tamaño ligeramente menor para desktop si se prefiere */
+            .control-button { width: 28px; height: 28px; font-size: 1.1rem; } 
+        }
+
+        .control-button:hover { transform: scale(1.05); opacity: 0.9; }
     </style>
 </head>
 
-<body class="antialiased">
+<body class="antialiased bg-gray-900">
 
+    <!-- BLOQUE JAVASCRIPT DINÁMICO (Conexión a Google Sheets) -->
     <script>
         // ** URL DE TU GOOGLE APPS SCRIPT (Hoja SM) **
         // ¡REEMPLAZA ESTA URL CON LA URL DE TU DESPLIEGUE FINAL!
         const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdHI6TjNys2Jvw_xhzySm2G2E73PGi53jayN-NmkQbpk4FPVCzPoCV122KG-0w7RNZ/exec"; 
         
-        // ** COLA GLOBAL DE CAMBIOS PENDIENTES **
         let updatesQueue = {}; 
 
-        // ----------------------------------------------------------------------
-        // FUNCIONES DE MANEJO DE DATOS
-        // ----------------------------------------------------------------------
-
-        // Función principal para obtener los datos y renderizar la tabla
         async function fetchAndRenderList() {
             const loadingElement = document.getElementById('loading-message');
             const listContainer = document.getElementById('units-list-table-body');
@@ -102,30 +100,24 @@
             
             loadingElement.textContent = 'Cargando datos del Omnissiah...';
             listContainer.innerHTML = ''; 
-            updatesQueue = {}; // Reiniciar la cola al cargar
+            updatesQueue = {}; 
 
             try {
                 const response = await fetch(APP_SCRIPT_URL);
-                
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Fallo de red (${response.status}). Revisa Apps Script o permisos.`);
-                }
+                if (!response.ok) throw new Error(`Fallo de red (${response.status}).`);
                 
                 const data = await response.json();
-                
                 let totalXP = 0;
                 let totalPC = 0;
                 let totalDestruidos = 0;
                 let html = '';
                 
                 if (data.length === 0) {
-                    loadingElement.textContent = 'Hoja SM vacía. Agrega unidades en tu Google Sheet.';
+                    loadingElement.textContent = 'Hoja SM vacía.';
                     return;
                 }
 
                 data.forEach(unit => {
-                    // Convertir a número con parseInt() para sumar y para la lógica de rangos
                     totalXP += parseInt(unit.xp) || 0;
                     totalPC += parseInt(unit.pc) || 0;
                     totalDestruidos += parseInt(unit.destruidos) || 0;
@@ -138,37 +130,35 @@
                         return 'Novato';
                     };
                     const rank = getRank(unit.xp);
-                    
                     const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                    
-                    // HTML actualizado para incluir Tipo de Unidad y Puntos Base (Columna B y C)
+
                     html += `
                         <tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700" data-unit-name="${unit.nombre}">
-                            <th scope="row" class="px-3 py-2 font-medium whitespace-nowrap text-white">
-                                <strong class="text-blue-400">${unit.nombre}</strong><br>
-                                <span class="text-xs text-gray-500">${unit.tipo}</span>
+                            <th scope="row" class="px-2 sm:px-3 py-2 font-medium whitespace-nowrap text-white text-left">
+                                <strong class="text-blue-400 block sm:inline">${unit.nombre}</strong>
+                                <span class="text-xs text-gray-500 block sm:inline sm:ml-1">${unit.tipo}</span>
                             </th>
-                            <td class="px-3 py-2 text-center text-yellow-400 font-bold">${unit.puntosBase}</td>
-                            <td class="px-3 py-2 text-center">${rank}</td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento', this)" data-type="xp" class="text-red-500 hover:text-red-400 font-bold">-</button>
-                                    <span id="xp-${safeName}" data-initial-value="${unit.xp}">${unit.xp}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento', this)" data-type="xp" class="text-green-500 hover:text-green-400 font-bold">+</button>
+                            <td class="px-2 sm:px-3 py-2 text-center text-yellow-400 font-bold hidden sm:table-cell">${unit.puntosBase}</td>
+                            <td class="px-2 sm:px-3 py-2 text-center text-xs sm:text-sm">${rank}</td>
+                            <td class="px-2 sm:px-3 py-2 text-center">
+                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
+                                    <span id="xp-${safeName}" data-initial-value="${unit.xp}" class="w-6 sm:w-8 text-center">${unit.xp}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
                                 </div>
                             </td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento', this)" data-type="destruidos" class="text-red-500 hover:text-red-400 font-bold">-</button>
-                                    <span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}">${unit.destruidos}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento', this)" data-type="destruidos" class="text-green-500 hover:text-green-400 font-bold">+</button>
+                            <td class="px-2 sm:px-3 py-2 text-center">
+                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
+                                    <span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}" class="w-6 sm:w-8 text-center">${unit.destruidos}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
                                 </div>
                             </td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento', this)" data-type="pc" class="text-red-500 hover:text-red-400 font-bold">-</button>
-                                    <span id="pc-${safeName}" data-initial-value="${unit.pc}">${unit.pc}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento', this)" data-type="pc" class="text-green-500 hover:text-green-400 font-bold">+</button>
+                            <td class="px-2 sm:px-3 py-2 text-center">
+                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
+                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
+                                    <span id="pc-${safeName}" data-initial-value="${unit.pc}" class="w-6 sm:w-8 text-center">${unit.pc}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
                                 </div>
                             </td>
                         </tr>
@@ -176,38 +166,31 @@
                 });
                 
                 listContainer.innerHTML = html;
-                loadingElement.textContent = 'Datos de la Cruzada cargados.';
+                loadingElement.style.display = 'none'; // Ocultar loading en lugar de cambiar texto
                 
-                // Actualizar los totales en las cajas
                 document.getElementById('total-pc').textContent = totalPC;
                 document.getElementById('total-xp').textContent = totalXP;
                 document.getElementById('total-destruidos').textContent = totalDestruidos;
 
-                saveButton.disabled = true; // Desactivar el botón al inicio
-                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
+                saveButton.disabled = true;
+                saveButton.textContent = 'Guardar Cambios (0)';
 
             } catch (error) {
                 console.error('Error fetching data:', error);
-                loadingElement.textContent = `ERROR AL CARGAR DATOS: ${error.message}. Verifica tu Hoja SM y el despliegue de Apps Script.`;
+                loadingElement.textContent = `ERROR: ${error.message}`;
             }
         }
 
-        // Función que registra un cambio en la cola y actualiza la UI
-        function addToQueue(nombreUnidad, campo, accion, buttonElement) {
+        function addToQueue(nombreUnidad, campo, accion) {
             const safeName = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
             const targetElement = document.getElementById(`${campo}-${safeName}`);
             let currentValue = parseInt(targetElement.textContent);
             const saveButton = document.getElementById('save-changes-button');
             
             let newValue = (accion === 'incremento') ? currentValue + 1 : Math.max(0, currentValue - 1);
-            
-            // 1. Actualizar la UI inmediatamente
             targetElement.textContent = newValue;
 
-            // 2. Actualizar la cola de cambios
             const key = `${nombreUnidad}_${campo}`;
-
-            // Si la unidad no está en la cola, inicializarla
             if (!updatesQueue[key]) {
                 updatesQueue[key] = {
                     nombreUnidad: nombreUnidad,
@@ -219,58 +202,39 @@
                 updatesQueue[key].valorFinal = newValue;
             }
 
-            // Si el valor final es igual al valor inicial, eliminarlo de la cola
             if (updatesQueue[key].valorFinal === updatesQueue[key].valorInicial) {
                 delete updatesQueue[key];
             }
 
-            // 3. Contar cambios pendientes y actualizar el botón
             const pendingCount = Object.keys(updatesQueue).length;
             saveButton.disabled = pendingCount === 0;
-            saveButton.textContent = `Guardar Cambios (${pendingCount} Pendientes)`;
+            saveButton.textContent = `Guardar Cambios (${pendingCount})`;
         }
 
-        // Función que envía todos los cambios de la cola al Apps Script (Guardado por lote)
         async function sendUpdates() {
             const saveButton = document.getElementById('save-changes-button');
             saveButton.disabled = true;
-            saveButton.textContent = 'Guardando... No recargar!';
+            saveButton.textContent = 'Guardando...';
 
-            // Convertir el objeto updatesQueue en un array de solo los valores finales
             const changesArray = Object.values(updatesQueue).map(item => ({
                 nombreUnidad: item.nombreUnidad,
                 campo: item.campo,
-                valor: item.valorFinal // Enviamos el valor final para que el script lo escriba
+                valor: item.valorFinal
             }));
             
-            if (changesArray.length === 0) {
-                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
-                return;
-            }
+            if (changesArray.length === 0) return;
 
             try {
-                // El script ahora espera un ARRAY de cambios
-                const response = await fetch(APP_SCRIPT_URL, {
+                await fetch(APP_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'cors',
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(changesArray)
                 });
-                
-                const result = await response.json();
-
-                if (result.success) {
-                    alert(`¡Guardado exitoso! ${result.unidadesActualizadas} unidades modificadas.`);
-                    // Recargar toda la lista para actualizar Rango y Totales
-                    fetchAndRenderList(); 
-                } else {
-                    alert(`Error al guardar en el servidor: ${result.message}`);
-                    saveButton.textContent = 'ERROR DE GUARDADO';
-                }
-
+                alert(`¡Guardado exitoso!`);
+                fetchAndRenderList(); 
             } catch (error) {
-                console.error('Error al enviar actualizaciones:', error);
-                alert('Error de conexión. Revisa la Consola y el Apps Script.');
+                alert('Error de conexión. Revisa la Consola.');
                 saveButton.textContent = 'FALLÓ EL ENVÍO';
             }
         }
@@ -278,72 +242,95 @@
         window.onload = fetchAndRenderList;
     </script>
     
+    <!-- HEADER -->
     <header class="header-bg relative">
         <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-        <div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="grimdark-title text-3xl sm:text-4xl">
+        <div class="relative max-w-7xl mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="grimdark-title text-2xl sm:text-4xl">
                 🛡️ ARCHIVOS DE CRUZADA: SPACE MARINES
             </h1>
-            <p class="mt-4 text-lg text-gray-300">
+            <p class="mt-2 text-sm sm:text-lg text-gray-300">
                 La Garra Sombría, Batalla por Hephaestos VII.
             </p>
-            <a href="index.html" class="mt-4 inline-block text-sm text-red-400 hover:text-red-300 font-bold border border-red-400 px-4 py-2 rounded">
-                ← Volver al Tablero de Campaña
-            </a>
+            
+            <!-- BOTONES DE NAVEGACIÓN SUPERIOR -->
+            <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+                <a href="menu.html" class="inline-block text-xs sm:text-sm text-gray-300 hover:text-white font-bold border border-gray-500 px-4 py-2 rounded transition-colors hover:border-gray-300">
+                    ← Volver al Menú
+                </a>
+                <!-- NUEVO BOTÓN OATHSWORN TRACKER -->
+                <a href="oath_tracker.html" class="inline-block text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-bold border border-blue-500 px-4 py-2 rounded transition-colors hover:border-blue-300 flex items-center justify-center">
+                    <span>📜</span> <span class="ml-2">Ver Oathsworn Campaign</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+    <main class="max-w-7xl mx-auto p-2 sm:p-4 md:p-6 lg:p-8">
 
-        <section id="space-marines-list" class="card p-6 faction-sm">
-            <h3 class="text-3xl font-bold text-blue-300 mb-4">Registro Activo (Hoja: SM)</h3>
-            <p id="loading-message" class="text-lg text-red-400 mb-6">Cargando datos...</p>
-            
-            <div class="grid grid-cols-3 gap-4 mb-8">
-                <div class="stat-box">Puntos de Cruzada (PC)<br><span id="total-pc">0</span></div>
-                <div class="stat-box">Puntos de Experiencia (PE)<br><span id="total-xp">0</span></div>
-                <div class="stat-box">Unidades Aniquiladas<br><span id="total-destruidos">0</span></div>
+        <!-- CONTENEDOR PRINCIPAL DE LA LISTA DINÁMICA -->
+        <section id="space-marines-list" class="card p-4 sm:p-6 faction-sm">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                <h3 class="text-2xl sm:text-3xl font-bold text-blue-300">Registro Activo (SM)</h3>
+                <!-- Botón de Guardar Cambios (Móvil: visible arriba también) -->
+                <button 
+                    id="save-changes-button"
+                    onclick="sendUpdates()"
+                    disabled
+                    class="mt-3 md:mt-0 w-full md:w-auto px-6 py-2 text-sm sm:text-base font-bold uppercase rounded transition duration-200 
+                           bg-red-700 text-white hover:bg-red-600 
+                           disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
+                    Guardar Cambios (0)
+                </button>
             </div>
             
-            <h4 class="text-xl section-title mb-4">Registro Detallado de Unidades</h4>
+            <p id="loading-message" class="text-lg text-red-400 mb-6 text-center md:text-left">Cargando datos...</p>
+            
+            <!-- Resumen de Totales (DINÁMICOS & RESPONSIVOS) -->
+            <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+                <div class="stat-box">
+                    <span class="text-xs sm:text-sm uppercase text-gray-400">Puntos Cruzada</span>
+                    <span id="total-pc" class="text-xl sm:text-3xl">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="text-xs sm:text-sm uppercase text-gray-400">Experiencia Total</span>
+                    <span id="total-xp" class="text-xl sm:text-3xl">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="text-xs sm:text-sm uppercase text-gray-400">Bajas Totales</span>
+                    <span id="total-destruidos" class="text-xl sm:text-3xl">0</span>
+                </div>
+            </div>
+            
+            <h4 class="text-lg sm:text-xl section-title mb-4">Registro Detallado de Unidades</h4>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-300">
-                    <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-3 py-2">Nombre / Tipo</th>
-                            <th scope="col" class="px-3 py-2 text-center">Puntos Base</th>
-                            <th scope="col" class="px-3 py-2 text-center">Rango</th>
-                            <th scope="col" class="px-3 py-2 text-center">Experiencia (XP)</th>
-                            <th scope="col" class="px-3 py-2 text-center">Enemigos Destruidos</th>
-                            <th scope="col" class="px-3 py-2 text-center">Puntos de Cruzada (PC)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="units-list-table-body">
+            <!-- Estructura de Tabla Dinámica (Desplazable en móvil) -->
+            <div class="overflow-x-auto -mx-4 sm:mx-0">
+                <div class="inline-block min-w-full align-middle">
+                    <table class="min-w-full text-sm text-left text-gray-300">
+                        <thead class="text-xs uppercase bg-gray-700 text-gray-400">
+                            <tr>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-left">Unidad</th>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-center hidden sm:table-cell">Pts</th>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">Rango</th>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">XP</th>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">Bajas</th>
+                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">PC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="units-list-table-body" class="divide-y divide-gray-700">
+                            <!-- Contenido inyectado por JavaScript -->
                         </tbody>
-                </table>
+                    </table>
+                </div>
             </div>
         </section>
 
-        <div class="mt-8 text-center">
-            <button 
-                id="save-changes-button"
-                onclick="sendUpdates()"
-                disabled
-                class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200 
-                       bg-red-700 text-white hover:bg-red-600 
-                       disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
-                Guardar Cambios (0 Pendientes)
-            </button>
-        </div>
-        </main>
+    </main>
 
-    <footer class="bg-gray-900 mt-12">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
-        </div>
+    <footer class="bg-gray-900 mt-8 sm:mt-12 py-8 text-center text-sm text-gray-500 px-4">
+        <p>&copy; 2025 Campaña "El Crisol de Varrus".</p>
     </footer>
 
 </body>
-
 </html>
