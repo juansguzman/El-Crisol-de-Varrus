@@ -2,955 +2,322 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Campaña Warhammer 40k: El Crisol de Varrus</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827;
-            /* Gris oscuro */
-            color: #E5E7EB;
-            /* Gris claro */
-        }
-        /* --- ESTILOS CLAVE DEL MENÚ --- */
-#menu-lateral {
-position: sticky;
-/* Fija el menú al hacer scroll */
-top: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campaña Warhammer 40k: El Crisol de Varrus</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* Estilos generales */
+body {
+font-family: 'Inter', sans-serif;
+background-color: #111827; /* Gris oscuro */
+color: #E5E7EB; /* Gris claro */
+}
+
+.header-bg {
+background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
+background-size: cover;
+background-position: center;
+background-blend-mode: multiply;
+background-color: rgba(31, 41, 55, 0.7);
+}
+
+.grimdark-title {
+font-family: 'Inter', sans-serif;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: #F9FAFB;
+text-shadow:
+0 0 5px #F9FAFB,
+0 0 10px #F9FAFB,
+0 0 20px #DC2626,
+0 0 30px #DC2626;
+animation: flicker 3s infinite alternate;
+}
+
+.card {
 background-color: #1F2937;
 border: 1px solid #374151;
 border-radius: 0.5rem;
-padding: 1rem;
-max-height: 80vh;
-overflow-y: auto;
+overflow: hidden;
 }
 
-#menu-lateral a {
-display: block;
-padding: 0.75rem 1rem;
-margin-bottom: 0.5rem;
-border-radius: 0.25rem;
+.section-title {
+font-weight: 900;
+color: #F3F4F6;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+border-bottom: 2px solid #DC2626;
+padding-bottom: 0.5rem;
+}
+
+/* --- ESTILOS DE BOTONES DE GALERÍA (FACTION BUTTONS) --- */
+.faction-button, .rules-button {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 2rem;
+height: 100%;
+min-height: 120px;
+border-radius: 0.5rem;
+font-weight: 900;
+text-transform: uppercase;
+transition: transform 0.2s, box-shadow 0.2s;
 text-decoration: none;
-font-weight: 700;
-color: #D1D5DB;
-transition: background-color 0.2s, color 0.2s;
-border-left: 4px solid transparent; /* Base para el color de facción */
-}
-
-#menu-lateral a:hover {
-background-color: #374151;
 color: #F9FAFB;
-transform: translateX(5px);
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
-        .header-bg {
-            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
-            background-color: rgba(31, 41, 55, 0.7);
-            /* Overlay oscuro */
-        }
 
-        .grimdark-title {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            /* Black */
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #F9FAFB;
-            /* Blanco casi puro */
-            text-shadow:
-                0 0 5px #F9FAFB,
-                0 0 10px #F9FAFB,
-                0 0 20px #DC2626,
-                /* Rojo */
-                0 0 30px #DC2626;
-            animation: flicker 3s infinite alternate;
-        }
+.faction-button:hover, .rules-button:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
 
-        .card {
-            background-color: #1F2937;
-            /* Gris más oscuro */
-            border: 1px solid #374151;
-            /* Borde sutil */
-            border-radius: 0.5rem;
-            /* Esquinas redondeadas */
-            overflow: hidden;
-            /* Para que la imagen no se salga */
-        }
+/* Estilo de la IMAGEN dentro del botón */
+.faction-button img {
+    width: 64px; /* Tamaño del logo */
+    height: 64px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)); /* Pequeño brillo */
+}
 
-        .card-header {
-            background-color: #374151;
-            /* Cabecera de la tarjeta */
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid #4B5563;
-        }
+/* Colores de facción */
+.faction-sm { background-color: #1E3A8A; }
+.faction-sm:hover { background-color: #254FBB; }
 
-        .card-body {
-            padding: 1.5rem;
-        }
+.faction-ig { background-color: #065F46; }
+.faction-ig:hover { background-color: #087F5B; }
 
-        .card-body h4 {
-            color: #F3F4F6;
-            /* Blanco */
-            font-weight: 700;
-        }
+.faction-we { background-color: #991B1B; }
+.faction-we:hover { background-color: #B92E2E; }
 
-        .card-body p {
-            color: #D1D5DB;
-            /* Gris más claro */
-        }
+.faction-dr { background-color: #5B21B6; }
+.faction-dr:hover { background-color: #6D28D9; }
 
-        .section-title {
-            font-weight: 900;
-            color: #F3F4F6;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #DC2626;
-            /* Rojo */
-            padding-bottom: 0.5rem;
-        }
+/* Colores de Reglas */
+.rules-button {
+background-color: #374151; /* Gris oscuro para diferenciar de facciones */
+font-weight: 700;
+min-height: 80px;
+}
+.rules-button:hover {
+background-color: #4B5563;
+border: 1px solid #FBBF24;
+}
+.rules-button i {
+color: #FBBF24; /* Amarillo para icono de pergamino/trofeo */
+margin-bottom: 0.3rem;
+}
 
-        .agenda-card {
-            background-color: #1F2937;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .agenda-card:hover {
-            border-color: #DC2626;
-            box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
-        }
-
-        .agenda-card h4 {
-            color: #F3F4F6;
-            font-weight: 700;
-        }
-
-        .agenda-card p {
-            color: #D1D5DB;
-        }
-
-        .agenda-card code {
-            background-color: #111827;
-            color: #F3F4F6;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
-        }
-        
-        .agenda-card li {
-            position: relative;
-            padding-left: 1.25rem;
-        }
-        
-        .agenda-card li::before {
-            content: '»';
-            position: absolute;
-            left: 0;
-            color: #DC2626; /* Rojo */
-            font-weight: 900;
-        }
-
-        .relic-table {
-            background-color: #1F2937;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            border: 1px solid #374151;
-        }
-
-        .relic-table th,
-        .relic-table td {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid #374151;
-        }
-
-        .relic-table th {
-            background-color: #374151;
-            color: #F9FAFB;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .relic-table td {
-            color: #D1D5DB;
-        }
-
-        .relic-table td code {
-            background-color: #4B5563;
-            color: #F3F4F6;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-family: monospace;
-            font-weight: 700;
-        }
-
-        .relic-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        @keyframes flicker {
-            0%,
-            100% {
-                text-shadow:
-                    0 0 5px #F9FAFB,
-                    0 0 10px #F9FAFB,
-                    0 0 20px #DC2626,
-                    0 0 30px #DC2626;
-            }
-
-            50% {
-                text-shadow:
-                    0 0 10px #F9FAFB,
-                    0 0 15px #DC2626,
-                    0 0 25px #DC2626;
-            }
-        }
-    </style>
+/* Estilos de las secciones de Acto/Briefing */
+.card-header {
+background-color: #374151;
+padding: 1rem 1.5rem;
+border-bottom: 1px solid #4B5563;
+}
+.card-body {
+padding: 1.5rem;
+}
+</style>
 </head>
 
 <body class="antialiased">
 
-    <!-- Encabezado -->
-    <header class="header-bg relative">
-        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-        <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="grimdark-title text-4xl sm:text-5xl md:text-6xl">
-                Campaña: El Crisol de Varrus
-            </h1>
-            <p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
-                Un Mundo Forja al borde de la guerra. Traición, sangre y acero os esperan.
-            </p>
-        </div>
-    </header>
+<header class="header-bg relative">
+<div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+<div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
+<h1 class="grimdark-title text-4xl sm:text-5xl md:text-6xl">
+Campaña: El Crisol de Varrus
+</h1>
+<p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+Un Mundo Forja al borde de la guerra. Traición, sangre y acero os esperan.
+</p>
+</div>
+</header>
 
-    <!-- Contenido Principal -->
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+<main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
 
 <h2 class="section-title text-3xl mb-8">Archivos de la Cruzada</h2>
 
-<div class="flex flex-col lg:flex-row gap-8">
+<section class="mb-10">
+<h3 class="text-2xl font-bold mb-6 text-red-400 text-center">Selecciona tu Fuerza de Combate</h3>
 
-<aside id="menu-lateral" class="w-full lg:w-1/4">
-<h3 class="text-2xl font-bold mb-4 text-red-400">Fuerzas de Combate</h3>
-<nav>
-<a href="ob_sm.html" class="faction-sm">🛡️ Space Marines (Astartes)</a>
-<a href="ob_ig.html" class="faction-ig">⚙️ Astra Militarum (Guardia Imperial)</a>
-<a href="ob_we.html" class="faction-we">🩸 World Eaters</a>
-<a href="ob_dru.html" class="faction-dr">🌑 Drukhari</a>
-</nav>
-<div class="mt-8 pt-4 border-t border-gray-700">
-<h3 class="text-xl font-bold mb-4 text-gray-300">Reglas de Campaña</h3>
-<nav>
-<a href="#reglas-campana" class="border-l-4 border-gray-500">📜 Reglas Adicionales</a>
-<a href="#progresion-campana" class="border-l-4 border-gray-500">🏆 Progresión y Agendas</a>
-</nav>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    
+    <a href="ob_sm.html" class="faction-button faction-sm">
+        <img src="Imagenes/raven_guard.png" alt="Raven Guard Icon" loading="lazy">
+        Space Marines
+      
+    </a>
+
+    <a href="ob_ig.html" class="faction-button faction-ig">
+        <img src="Imagenes/imperial_guard.png" alt="Imperial Guard Icon" loading="lazy">
+        Astra Militarum
+    </a>
+
+    <a href="ob_we.html" class="faction-button faction-we">
+        <img src="Imagenes/world_eaters.png" alt="World Eaters Icon" loading="lazy">
+        World Eaters
+       
+    </a>
+
+    <a href="ob_dr.html" class="faction-button faction-dr">
+        <img src="Imagenes/drukhari.png" alt="Drukhari Icon" loading="lazy">
+        Drukhari
+       
+    </a>
 </div>
-</aside>
+</section>
+<section class="pt-6 border-t border-gray-700 mb-12">
+    <h3 class="text-2xl font-bold mb-6 text-red-400 text-center">Reglas de Campaña</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        
+        <a href="reglas_a.html" class="rules-button">
+            <i>📜</i>
+            Reglas Adicionales
+        </a>
+        
+        <a href="progresion.html" class="rules-button">
+            <i>🏆</i>
+            Progresión y Agendas
+        </a>
+        
+    </div>
+</section>
+<div class="pt-8 border-t border-gray-700">
+    <h2 class="section-title text-3xl mb-6">Prólogo y Briefings de Campaña</h2>
+</div>
 
-<div class="w-full lg:w-3/4 space-y-12">
+<section class="mb-12">
+    <h3 class="text-2xl font-bold text-red-400 mb-4">Prólogo: El Mundo Forja Manchado</h3>
+    <div class="space-y-4 text-lg text-gray-300">
+        <p>
+            <strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja, dominadas por la capital, la <strong>Aguja Adamantina</strong>, producen armas y blindados para una docena de cruzadas imperiales.
+        </p>
+        <p>
+            Pero Hephaestos VII guarda un secreto. No está gobernado por el Adeptus Mechanicus, sino por un antiguo linaje de Rogue Traders, los <strong>Varrus</strong>. El actual regente, el <strong>Gobernador-Magnate Kael Varrus</strong>, es un hombre consumido por la paranoia y el deseo de inmortalidad. Para mantener su poder y su vida, ha forjado un pacto oscuro.
+        </p>
+        <p>
+            Oculto a los ojos del Imperium, Varrus comercia con los <strong>Drukhari de la Cábala del Ojo Roto</strong>. A cambio de elixires de vida y Arcanotecnología Xenos, Varrus les entrega lo único que un Mundo Forja tiene en abundancia: maquinaria y almas. Decenas de miles de trabajadores desaparecen de los turnos de noche, sus muertes encubiertas como "accidentes industriales", para alimentar las arenas de Commorragh.
+        </p>
+        <p>
+            Esta traición ha puesto en marcha cuatro destinos que chocarán en una guerra total por el control del planeta.
+        </p>
+    </div>
+</section>
+<section class="mb-12 pt-8 border-t border-gray-700">
+    <h2 class="section-title text-3xl mb-6">Prólogo y Resultados del Acto I</h2>
+    
+    <!-- Bloque de Contexto (Prólogo) -->
+    <div class="card p-6 mb-8 border-l-4 border-gray-500">
+        <h3 class="text-2xl font-bold text-red-400 mb-4">Crónicas del Crisol de Varrus: El Fuego de la Traición</h3>
+        <p class="text-lg text-gray-300">
+            El Crisol de Varrus ha estallado en una guerra total. El pacto secreto del Gobernador Kael Varrus con los Drukhari se ha hecho añicos, y la intervención de la Raven Guard y los World Eaters ha convertido el planeta en una zona de guerra de cuatro facciones.
+        </p>
+    </div>
 
-<section class="card p-6">
-<div class="welcome-card-icon">⚙️</div>
-<h3 class="text-3xl font-bold text-gray-300 mb-4">Tablero de Mando Central</h3>
-<p class="text-lg text-gray-400 mb-4">Selecciona una fuerza en el menú lateral para acceder a su **Hoja de Orden de Batalla** y gestionar los registros de Cruzada (XP, PC, Bajas).</p>
-<p class="text-sm text-gray-500">Actualmente, solo la lista de **Space Marines** está conectada a la base de datos dinámica.</p>
+    <!-- FIN DEL ACTO I: Resultados Detallados -->
+    <section class="mb-12 pt-8 border-t border-gray-700">
+    <h2 class="section-title text-3xl mb-6">Prólogo y Resultados del Acto I</h2>
+    
+    <!-- Bloque de Contexto (Prólogo) -->
+    <div class="card p-6 mb-8 border-l-4 border-gray-500">
+        <h3 class="text-2xl font-bold text-red-400 mb-4">Crónicas del Crisol de Varrus: El Fuego de la Traición</h3>
+        <p class="text-lg text-gray-300">
+            El Crisol de Varrus ha estallado en una guerra total. El pacto secreto del Gobernador Kael Varrus con los Drukhari se ha hecho añicos, y la intervención de la Raven Guard y los World Eaters ha convertido el planeta en una zona de guerra de cuatro facciones. La verdad sobre la traición ha fracturado el planeta, alineando fuerzas leales contra renegados y xenos.
+        </p>
+    </div>
+
+    <!-- FIN DEL ACTO I: Resultados Detallados -->
+    <h3 class="text-2xl font-bold text-red-400 mb-6">FIN DEL ACTO I: El Alzamiento de las Cuatro Facciones</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <!-- Resultado Batalla 1: Aguja Adamantina -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-xl font-bold text-white">Batalla 1: Asalto a la Aguja Adamantina</h4>
+                <p class="text-sm text-blue-300">Raven Guard vs. Astra Militarum</p>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-300 space-y-3">
+                    <strong class="text-white">Narrativa:</strong> El asalto quirúrgico de la <strong>Raven Guard</strong> para decapitar el liderazgo traidor se encontró con una muralla de fe y blindaje. El <strong>Lord Commissar Rausch</strong>, siguiendo ciegamente la propaganda de Varrus, transformó la capital en un infierno urbano. Los Astartes tomaron la Aguja, pero la feroz y estratégica resistencia de Rausch proporcionó la cobertura necesaria para que el Gobernador Varrus escapara con tropas de élite, llevando consigo arcanotecnología vital.
+                </p>
+                <p class="text-gray-300">
+                    <strong class="text-white">Consecuencia:</strong> El Capitán Braken se ve obligado a asegurar la Aguja Adamantina y sus vastas instalaciones de manufactura, perdiendo la iniciativa de la caza. La Guardia Imperial mantiene su lealtad al Gobernador fugitivo, considerándolos a los Astartes como los verdaderos renegados.
+                </p>
+            </div>
+        </div>
+
+        <!-- Resultado Batada 2: La Cosecha Arruinada -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-xl font-bold text-white">Batalla 2: La Cosecha Interrumpida</h4>
+                <p class="text-sm text-red-300">World Eaters vs. Drukhari</p>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-300 space-y-3">
+                    <strong class="text-white">Narrativa:</strong> En los Páramos de Ceniza, la 'cosecha' Drukhari se convirtió en un matadero sin arte. Los <strong>Bersérkers</strong> del Señor Agnus no permitieron que la Succubus Anyara Jynx disfrutara de su agonía. La Legión de Angron arrasó con la fuerza de recolección en una masacre imparable. Jynx se vio obligada a una retirada humillante, pero en el caos interceptó las comunicaciones de la rata traidora, Varrus.
+                </p>
+                <p class="text-gray-300">
+                    <strong class="text-white">Consecuencia:</strong> La Succubus Anyara Jynx jura una venganza personal y exquisita contra Varrus por la traición y la pérdida de su valiosa agonía. Los <strong>World Eaters</strong>, habiendo satisfecho temporalmente su sed con sangre xenos, perciben ahora el olor a victoria en la Aguja Adamantina y se dirigen hacia el combate más grande que el planeta puede ofrecer.
+                </p>
+            </div>
+        </div>
+        
+    </div>
 </section>
 
-</div>
+<!-- INTRODUCCIÓN AL ACTO II (Ampliación) -->
+<section class="mb-12">
+    <h2 class="section-title text-3xl mb-6">INTRODUCCIÓN AL ACTO II: El Asedio y la Venganza</h2>
+    <p class="text-lg text-gray-300 mb-8">
+        El campo de batalla se ha fracturado, y la caza del Gobernador Varrus impulsa los nuevos enfrentamientos. Dos conflictos simultáneos, nacidos de la desesperación y la furia, determinarán quién dominará el Mundo Forja.
+    </p>
 
-</div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
+        <!-- Batalla A: Asedio de la Aguja -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-xl font-bold text-white">⚔️ Batalla A: Asedio de la Aguja - La Prueba de Acero</h4>
+                <p class="text-sm text-red-400">Enfrentamiento: Raven Guard vs. World Eaters</p>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-300">
+                    El Capitán Braken y la <strong>Raven Guard</strong> están atrapados. Deben defender las fortificaciones de la capital y sus vitales arsenales contra la marea de Astartes traidores. El Señor Agnus ha olfateado la sangre de los 'Cuervos' y la promesa de un asalto glorioso. Los <strong>World Eaters</strong> avanzan sin estrategia, buscando tomar cada cráneo en la Aguja Adamantina. La <strong>Raven Guard</strong> debe resistir la embestida de la Legión y demostrar que la disciplina imperial es superior a la furia del Caos.
+                </p>
+            </div>
+        </div>
 
+        <!-- Batalla B: Batalla por los Páramos -->
+        <div class="card">
+            <div class="card-header">
+                <h4 class="text-xl font-bold text-white">⚔️ Batalla B: Batalla por los Páramos - Caza Exquisita</h4>
+                <p class="text-sm text-red-400">Enfrentamiento: Astra Militarum vs. Drukhari</p>
+            </div>
+            <div class="card-body">
+                <p class="text-gray-300">
+                    El Gobernador Varrus y el <strong>Lord Commissar Rausch</strong>, en una alianza temporal e incómoda, se han atrincherado en búnkeres defensivos. Han reunido tropas de élite y vehículos blindados. La <strong>Succubus Anyara Jynx</strong> lanza a sus <strong>Drukhari</strong> en una cacería sádica. Su misión no es la matanza simple, sino la captura. La Guardia Imperial debe luchar por la vida de un hombre que los traicionó, mientras los Drukhari buscan hacer pagar al Gobernador con una agonía lenta y pública.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    
 
 </main>
 
-
-
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-
-        <!-- Prólogo -->
-        <section class="mb-12">
-            <h2 class="section-title text-3xl mb-6">Prólogo: El Mundo Forja Manchado</h2>
-            <div class="space-y-4 text-lg text-gray-300">
-                <p>
-                    <strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja, dominadas por la capital, la <strong>Aguja Adamantina</strong>, producen armas y blindados para una docena de cruzadas imperiales.
-                </p>
-                <p>
-                    Pero Hephaestos VII guarda un secreto. No está gobernado por el Adeptus Mechanicus, sino por un antiguo linaje de Rogue Traders, los <strong>Varrus</strong>. El actual regente, el <strong>Gobernador-Magnate Kael Varrus</strong>, es un hombre consumido por la paranoia y el deseo de inmortalidad. Para mantener su poder y su vida, ha forjado un pacto oscuro.
-                </p>
-                <p>
-                    Oculto a los ojos del Imperium, Varrus comercia con los <strong>Drukhari de la Cábala del Ojo Roto</strong>. A cambio de elixires de vida y Arcanotecnología Xenos, Varrus les entrega lo único que un Mundo Forja tiene en abundancia: maquinaria y almas. Decenas de miles de trabajadores desaparecen de los turnos de noche, sus muertes encubiertas como "accidentes industriales", para alimentar las arenas de Commorragh.
-                </p>
-                <p>
-                    Esta traición ha puesto en marcha cuatro destinos que chocarán en una guerra total por el control del planeta.
-                </p>
-            </div>
-        </section>
-
-        <!-- Acto I: El Desembarco -->
-        <section class="mb-12">
-            <h2 class="section-title text-3xl mb-6">Acto I: El Desembarco</h2>
-            <p class="text-lg text-gray-300 mb-8">
-                Dos conflictos estallan simultáneamente en dos zonas de guerra distintas. El resultado de estas batallas iniciales determinará el curso de la campaña: los ganadores asegurarán las posiciones vitales, mientras que los perdedores serán forzados a luchar por la supervivencia en las ruinas.
-            </p>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                <!-- Batalla 1 -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="text-2xl font-bold text-white">Batalla 1: "La Purga de la Aguja"</h3>
-                        <p class="text-lg text-red-400">Zona de Guerra: Aguja Adamantina (Capital)</p>
-                    </div>
-                    <div class="card-body space-y-6">
-                        <div>
-                            <h4 class="text-xl mb-2 text-blue-300">Briefing: Raven Guard</h4>
-                            <p>Capitán Braken, tu fuerza de ataque, la 'Garra Sombría', ha llegado. El Gobernador Kael Varrus es un traidor. Tu misión es una decapitación quirúrgica: infíltrate en la Aguja Adamantina, asegura los complejos de manufactura y captura a Varrus vivo. Tus Thunderhawks han sido detectados. El PDF local, engañado por su líder, se moviliza. Son un obstáculo. Atraviésalos y asegura al traidor.</p>
-                        </div>
-                        <div class="border-t border-gray-700 pt-6">
-                            <h4 class="text-xl mb-2 text-green-300">Briefing: Guardia Imperial</h4>
-                            <p>Coronel, ¡alarmas! ¡Contactos no autorizados de Astartes han violado el perímetro! Sus insignias son negras, renegados hostiles. El Lord Gobernador Varrus ha declarado la ley marcial. ¡Movilice al 501º! ¡Posicionen los Leman Russ y atrincheren a la infantería! ¡Están atacando el corazón de nuestra industria! ¡Por el Trono y por Hephaestos, estos traidores no pasarán!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Batalla 2 -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="text-2xl font-bold text-white">Batalla 2: "La Cosecha Interrumpida"</h3>
-                        <p class="text-lg text-red-400">Zona de Guerra: Páramos de Ceniza (Afueras)</p>
-                    </div>
-                    <div class="card-body space-y-6">
-                        <div>
-                            <h4 class="text-xl mb-2 text-red-300">Briefing: World Eaters</h4>
-                            <p>Señor Agnus, ¡lo oíste a través de la Disformidad! Un aullido de agonía y traición. Has caído sobre este mundo y has encontrado la fuente: ¡Xenos! Criaturas pálidas y débiles preparan una cosecha de esclavos. ¡Es un insulto! Han preparado un banquete para Khorne y pretenden robarlo. ¡No hay plan, solo ira! ¡Demuéstrales cómo se toma un diezmo de sangre! ¡SANGRE PARA EL DIOS DE LA SANGRE!</p>
-                        </div>
-                        <div class="border-t border-gray-700 pt-6">
-                            <h4 class="text-xl mb-2 text-purple-300">Briefing: Drukhari</h4>
-                            <p>Arconte , el 'pago' del Gobernador Varrus es exquisito. Miles de especímenes 'mon-keigh' esperan en los corrales. Pero el momento se ha roto. ¡Ese ruido vulgar! ¡Cápsulas de asalto! ¡Bersérkers del Caos! Han caído sobre tu zona de reclección y están... ¡matando a los esclavos! ¡Sin arte, sin sutileza! ¡Están arruinando tu cosecha! Enséñales la elegancia de la verdadera crueldad.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Reglas de Campaña Adicionales -->
-        <section class="mb-12">
-            <h2 class="section-title text-3xl mb-6">Reglas de Campaña Adicionales</h2>
-            <p class="text-lg text-gray-300 mb-8">
-                Las siguientes reglas se aplican después de cada batalla para determinar las recompensas y beneficios.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                <div class="agenda-card">
-                    <h4>Liderazgo Veterano</h4>
-                    <p class="text-sm italic mb-2">La presencia del comandante en el campo de batalla inspira a las tropas a aprender de la victoria.</p>
-                    <p>Si tu <code>WARLORD</code> sobrevivió a la batalla Y tú ganaste la batalla, puedes usar la siguiente habilidad al actualizar tu Hoja de Orden de Batalla:</p>
-                    <ul class="list-none space-y-2 mt-2">
-                        <li>Al ganar un <code>Battle Trait</code> para <strong>una sola unidad</strong> (por subir de rango o por una Requisición), puedes elegir el resultado de la tabla de <code>Battle Trait</code> de esta campaña o de las tablas de <code>Battle Trait</code> específicas de tu ejército (si existen).</li>
-                        <li><strong>Coste:</strong> <code>1 RP</code> si la unidad es <code>INFANTRY</code>.</li>
-                        <li><strong>Coste:</strong> <code>2 RP</code> si la unidad es <code>VEHICLE</code> o <code>MOUNTED</code>.</li>
-                        <li>Esta habilidad no puede usarse en unidades <code>CHARACTER</code>.</li>
-                    </ul>
-                </div>
-
-                <div class="agenda-card">
-                    <h4>Inspiración del Comandante</h4>
-                    <p class="text-sm italic mb-2">El ejemplo de tu Warlord te permite guiar el destino de tus tropas con más certeza después del combate.</p>
-                    <p>Si tu <code>WARLORD</code> sobrevivió a la batalla (independientemente de si ganaste o perdiste):</p>
-                    <ul class="list-none space-y-2 mt-2">
-                        <li>Ganas una "Repetición de Destino" gratuita para usar durante la fase de actualización post-batalla.</li>
-                        <li>Puedes usar esta repetición una vez para repetir cualquier tirada que hagas (p.ej., una tirada de <code>Out of Action</code>, <code>Battle Scar</code>, <code>Battle Trait</code>, etc.) al actualizar tu Hoja de Orden de Batalla.</li>
-                    </ul>
-                </div>
-
-                <div class="agenda-card">
-                    <h4>Intervención del Destino</h4>
-                    <p class="text-sm italic mb-2">A veces, el destino debe ser forzado, pagando un precio para reescribir un fracaso.</p>
-                    <p>Durante la fase de actualización post-batalla, puedes gastar <code>RP</code> para repetir una sola tirada que hayas hecho (p.ej., <code>Battle Scar</code>, <code>Battle Trait</code>, etc.).</p>
-                    <ul class="list-none space-y-2 mt-2">
-                        <li><strong>1er Uso (en esta fase post-batalla):</strong> Cuesta <code>1 RP</code>.</li>
-                        <li><strong>2º Uso (en esta fase post-batalla):</strong> Cuesta <code>2 RP</code>.</li>
-                        <li><strong>3er Uso y subsecuentes:</strong> Cuesta <code>3 RP</code> cada uno.</li>
-                        <li>El coste se reinicia a 1 RP en la siguiente fase post-batalla. Esto es adicional a cualquier repetición gratuita de "Inspiración del Comandante".</li>
-                    </ul>
-                </div>
-                
-                <div class="agenda-card">
-                    <h4>Ganancias de Requisición (RP)</h4>
-                    <p class="text-sm italic mb-2">Los recursos se ganan a través del derramamiento de sangre y la conquista.</p>
-                    <p>Al final de cada batalla, calcula los <code>Puntos de Requisición (RP)</code> ganados de la siguiente manera:</p>
-                    <ul class="list-none space-y-2 mt-2">
-                        <li><strong>Participar en una Batalla:</strong> Ganas <code>1 RP</code>.</li>
-                        <li><strong>Ganar la Batalla:</strong> Ganas <code>1 RP</code> adicional (para un total de 2 RP).</li>
-                    </ul>
-                </div>
-
-            </div>
-        </section>
-
-
-        <!-- Progresión de Campaña -->
-        <section class="mb-12">
-            <h2 class="section-title text-3xl mb-6">Progresión de Campaña</h2>
-            <p class="text-lg text-gray-300 mb-8">
-                Esta campaña utiliza reglas de Cruzada adaptadas. Las unidades ganan <code>XP</code> por participar en batallas, completar <code>Agendas</code> y lograr hazañas. Al subir de rango, pueden ganar <code>Battle Traits</code>, <code>Weapon Modifications</code> o <code>Battle Scars</code>. También ganarás <code>Puntos de Requisición (RP)</code> para gastar en mejorar tu ejército.
-            </p>
-
-            <!-- Battle Traits -->
-            <div class="mb-12">
-                <h3 class="section-title text-2xl mb-6">Battle Traits</h3>
-                <p class="text-gray-300 mb-6">
-                    Cada vez que una unidad gana un <code>Battle Trait</code>, tira 1D6 en la tabla correspondiente o elige uno que encaje con la narrativa. Una unidad no puede tener el mismo <code>Battle Trait</code> dos veces.
-                </p>
-
-                <!-- Tablas de Battle Traits -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <!-- CHARACTER UNITS -->
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">CHARACTER UNITS (excluyendo MONSTER y VEHICLE)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>D6</strong></td>
-                                    <td><strong>Rasgo y Reglas</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>1</strong></td>
-                                    <td>
-                                        <strong>TÁCTICO EXPERIMENTADO</strong><br>
-                                        <span class="text-sm italic">La experiencia en innumerables batallas le permite identificar momentos cruciales para actuar.</span><br>
-                                        Al inicio de tu <code>Command phase</code>, si este <code>CHARACTER</code> está en el campo de batalla, en una tirada de 5+, ganas 1 <code>CP</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>2</strong></td>
-                                    <td>
-                                        <strong>QUEMADURAS BIO-ÁCIDAS</strong><br>
-                                        <span class="text-sm italic">Las cicatrices lívidas de su supervivencia lo convierten en un combatiente indomable.</span><br>
-                                        Los modelos <code>CHARACTER</code> en esta unidad tienen la habilidad <code>Feel No Pain 5+</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>3</strong></td>
-                                    <td>
-                                        <strong>LÍDER NATURAL</strong><br>
-                                        <span class="text-sm italic">Este guerrero inspira o domina a quienes lo rodean.</span><br>
-                                        Cada vez que haces un test de <code>Battle-shock</code> o <code>Leadership</code> para esta unidad, puedes re-roll ese test.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>4</strong></td>
-                                    <td>
-                                        <strong>COMBATIENTE MORTAL</strong><br>
-                                        <span class="text-sm italic">Ha adoptado el mantra de luchar con la misma ferocidad que sus enemigos.</span><br>
-                                        Todas las armas melee equipadas por modelos <code>CHARACTER</code> en esta unidad tienen la habilidad <code>[SUSTAINED HITS 1]</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>5</strong></td>
-                                    <td>
-                                        <strong>ACECHADOR DE SOMBRAS</strong><br>
-                                        <span class="text-sm italic">Ha aprendido a moverse sin ser visto, cazando a su presa desde la oscuridad.</span><br>
-                                        Esta unidad tiene la habilidad <code>Stealth</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>6</strong></td>
-                                    <td>
-                                        <strong>MUERTE ENCARNADA (AURA)</strong><br>
-                                        <span class="text-sm italic">Un sentido palpable de pavor envuelve a este asesino.</span><br>
-                                        Mientras una unidad enemiga esté a 6" de esta unidad, empeora la característica <code>Leadership</code> de los modelos en esa unidad enemiga en 1.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- VEHICLE UNITS -->
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">VEHICLE UNITS (excluyendo WALKER)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>D6</strong></td>
-                                    <td><strong>Rasgo y Reglas</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>1</strong></td>
-                                    <td>
-                                        <strong>CASCO BENDECIDO</strong><br>
-                                        <span class="text-sm italic">La crew cree firmemente que las palabras de protección y los unguentos sagrados ofrecen protección sobrenatural.</span><br>
-                                        Modelos en esta unidad tienen una <code>invulnerable save</code> de 5+.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>2</strong></td>
-                                    <td>
-                                        <strong>ARTILLEROS CONCENTRADOS</strong><br>
-                                        <span class="text-sm italic">Aunque los horrores pululen, los artilleros mantienen una calma sombría.</span><br>
-                                        Modelos en esta unidad no sufren la penalización a los <code>Hit rolls</code> por hacer ataques a distancia mientras están en <code>Engagement Range</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>3</strong></td>
-                                    <td>
-                                        <strong>BLINDAJE DE EMERGENCIA</strong><br>
-                                        <span class="text-sm italic">Este vehículo fue modificado con placas de blindaje adicionales diseñadas para desviar un impacto fatal.</span><br>
-                                        Una vez por batalla, cuando un ataque sea asignado a un modelo en esta unidad, puedes cambiar el Daño de ese ataque a 0.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>4</strong></td>
-                                    <td>
-                                        <strong>TRIPULACIÓN DE ÉLITE</strong><br>
-                                        <span class="text-sm italic">La crew son veteranos curtidos, su coordinación forjada en la batalla.</span><br>
-                                        Cada vez que un modelo en esta unidad hace un ataque, re-roll un <code>Hit roll</code> de 1.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>5</strong></td>
-                                    <td>
-                                        <strong>CÉLULA DE ENERGÍA ARCANOTECNOLÓGICA</strong><br>
-                                        <span class="text-sm italic">Un mecanismo arcano ahora potencia el rendimiento de este vehículo.</span><br>
-                                        Suma 2" a la característica <code>Move</code> de los modelos en esta unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>6</strong></td>
-                                    <td>
-                                        <strong>NODOS DE AUTO-REPARACIÓN</strong><br>
-                                        <span class="text-sm italic">Este vehículo está equipado con dispositivos avanzados que contrarrestan daños y efectúan reparaciones.</span><br>
-                                        Al inicio de tu <code>Command phase</code>, un modelo en esta unidad recupera 1 herida perdida.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- INFANTRY UNITS -->
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">INFANTRY UNITS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>D6</strong></td>
-                                    <td><strong>Rasgo y Reglas</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>1</strong></td>
-                                    <td>
-                                        <strong>RESISTENCIA MARCADA POR LA BATALLA</strong><br>
-                                        <span class="text-sm italic">Han sobrevivido a hurcanes de fuego y nunca se rinden.</span><br>
-                                        Modelos en esta unidad tienen la habilidad <code>Feel No Pain 6+</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>2</strong></td>
-                                    <td>
-                                        <strong>FINTA ESTRATÉGICA</strong><br>
-                                        <span class="text-sm italic">Son expertos en atraer al enemigo a una posición para luego redesplegarse a un punto más ventajoso antes de que la batalla comience.</span><br>
-                                        Después de que ambos jugadores han desplegado, pero antes de que se determine el primer turno, puedes redesplegar esta unidad (y cualquier <code>CHARACTER</code> unido a ella) en cualquier lugar dentro de tu zona de despliegue.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>3</strong></td>
-                                    <td>
-                                        <strong>OBEDIENCIA OBDURADA</strong><br>
-                                        <span class="text-sm italic">Guerreros que ponen el deber antes que sus vidas, asegurarán sus objetivos sin importar el peligro.</span><br>
-                                        Suma 1 a la característica <code>Objective Control</code> de todos los modelos en esta unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>4</strong></td>
-                                    <td>
-                                        <strong>VETERANOS RESUELTOS</strong><br>
-                                        <span class="text-sm italic">El horror ha vuelto locos a muchos, pero algunos se niegan a ceder.</span><br>
-                                        Cada vez que haces un test de <code>Battle-shock</code>, <code>Leadership</code> o <code>Desperate Escape</code> para esta unidad, suma 1 a ese test.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>5</strong></td>
-                                    <td>
-                                        <strong>SÓLO SOBREVIVEN LOS RÁPIDOS</strong><br>
-                                        <span class="text-sm italic">La supervivencia significa moverse rápido y matar primero.</span><br>
-                                        Suma 1 a las tiradas de <code>Advance</code> y <code>Charge</code> hechas para esta unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>6</strong></td>
-                                    <td>
-                                        <strong>CAZA-CABEZAS</strong><br>
-                                        <span class="text-sm italic">Estos ejecutores dedicados reciben un objetivo prioritario para matar a toda costa.</span><br>
-                                        Al inicio de la batalla, selecciona una unidad enemiga. Hasta el final de la batalla, cada vez que un modelo en esta unidad hace un ataque contra esa unidad enemiga, re-roll un <code>Hit roll</code> de 1 y re-roll un <code>Wound roll</code> de 1.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- MOUNTED UNITS -->
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th colspan="2">MOUNTED UNITS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>D6</strong></td>
-                                    <td><strong>Rasgo y Reglas</strong></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>1</strong></td>
-                                    <td>
-                                        <strong>CELERIDAD DEL CAZADOR</strong><br>
-                                        <span class="text-sm italic">Al cazar presas elusivas o evadir horrores, estos guerreros desatan una reserva de velocidad inigualable.</span><br>
-                                        Suma 2" a la característica <code>Move</code> de los modelos en esta unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>2</strong></td>
-                                    <td>
-                                        <strong>ARTILLERÍA DE ALTA VELOCIDAD</strong><br>
-                                        <span class="text-sm italic">Estos dragones veloces han perfeccionado disparar y recargar a alta velocidad.</span><br>
-                                        Cada vez que esta unidad <code>Advances</code>, hasta el final del turno, todas las armas a distancia equipadas por modelos en esta unidad tienen la habilidad <code>[ASSAULT]</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>3</strong></td>
-                                    <td>
-                                        <strong>IMPULSO DEPREDADOR</strong><br>
-                                        <span class="text-sm italic">Estos carniceros disfrutan desgarrando a su presa y cargan ansiosamente a la primera oportunidad.</span><br>
-                                        Puedes re-roll las tiradas de <code>Charge</code> hechas para esta unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>4</strong></td>
-                                    <td>
-                                        <strong>GUERRILLEROS MONTADOS</strong><br>
-                                        <span class="text-sm italic">Una táctica clave es golpear duro y rápido, retirarse y volver a atacar.</span><br>
-                                        Esta unidad es elegible para <code>declare a charge</code> en un turno en el que hizo <code>Fall Back</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>5</strong></td>
-                                    <td>
-                                        <strong>REPOSICIONAMIENTO RÁPIDO</strong><br>
-                                        <span class="text-sm italic">Maniobrando constantemente, estas unidades golpean desde un ángulo inesperado y luego se desvanecen.</span><br>
-                                        En tu <code>Shooting Phase</code>, después de que esta unidad haya disparado, puede hacer un <code>Normal move</code> de hasta 6". Si lo hace, no es elegible para <code>declare a charge</code> este turno.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>6</strong></td>
-                                    <td>
-                                        <strong>INCURSORES INCANSABLES</strong><br>
-                                        <span class="text-sm italic">Disparando a quemarropa mientras zigzaguean entre los horrores enemigos.</span><br>
-                                        Modelos en esta unidad pueden <code>make attacks</code> con armas a distancia incluso cuando están en <code>Engagement Range</code> (solo contra unidades en <code>Engagement Range</code>).
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Agendas -->
-            <div class="mb-12">
-                <h3 class="section-title text-2xl mb-6">Agendas de Campaña</h3>
-                <p class="text-gray-300 mb-6">
-                    Al inicio de cada batalla de Cruzada, puedes seleccionar Agendas de esta lista. Cada jugador puede seleccionar un número de Agendas igual al tamaño de la batalla (p.ej., 2 Agendas para Incursion, 3 para Strike Force). No puedes seleccionar la misma Agenda más de una vez.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                    <div class="agenda-card">
-                        <h4>SUPERVIVIENTES DEL CAMPO DE BATALLA</h4>
-                        <p class="text-sm italic mb-2">Para aquellos que luchan en Hephaestos VII, el mero acto de sobrevivir a la carnicería es una victoria instintiva.</p>
-                        <p>Al inicio de la batalla, selecciona hasta tres unidades de tu ejército. Al final de la batalla, por cada una de esas unidades:</p>
-                        <ul class="list-disc list-inside ml-4 text-sm">
-                            <li>Si esa unidad no ha sido <code>destroyed</code>, gana 2 <code>XP</code>.</li>
-                            <li>Si esa unidad no está <code>Below Half-strength</code>, gana 1 <code>XP</code> adicional.</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="agenda-card">
-                        <h4>HEADHUNTERS</h4>
-                        <p class="text-sm italic mb-2">Eliminar la estructura de mando enemiga es una forma segura de avanzar en tu causa.</p>
-                        <p>Cada vez que un modelo de tu ejército destruye una unidad <code>CHARACTER</code> enemiga, la unidad de ese modelo gana 1 <code>XP</code>. Si la unidad <code>destroyed</code> contenía el <code>WARLORD</code> de tu oponente, la unidad de ese modelo gana 3 <code>XP</code> en su lugar.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>OBJETIVOS MONSTRUOSOS</h4>
-                        <p class="text-sm italic mb-2">Cuanto más grande y aterrador es el enemigo, mayor es la recompensa y el renombre para quienes lo derriban.</p>
-                        <p>Cada vez que un modelo de tu ejército destruye una unidad <code>MONSTER</code> o <code>VEHICLE</code> enemiga (excluyendo <code>DEDICATED TRANSPORTS</code>), la unidad de ese modelo gana 2 <code>XP</code>. Si la unidad <code>destroyed</code> era <code>TITANIC</code>, la unidad de ese modelo gana 4 <code>XP</code> en su lugar.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>ERRADICAR A LAS MASAS</h4>
-                        <p class="text-sm italic mb-2">Cuando te enfrentas a números abrumadores, una estrategia sólida es diezmar las filas enemigas lo más rápido posible.</p>
-                        <p>Cada vez que una unidad de tu ejército es seleccionada para disparar o luchar, si al resolver esos ataques seis o más modelos enemigos son <code>destroyed</code>, esa unidad gana 1 <code>XP</code>.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>OBJETIVOS CRÍTICOS</h4>
-                        <p class="text-sm italic mb-2">Ya sean cajas de suministros, enlaces de comunicación vitales o simplemente terreno clave, capturar lo que el enemigo considera vital puede ser la clave de la victoria.</p>
-                        <p>Al inicio de la batalla, tu oponente debe seleccionar dos <code>objective markers</code> diferentes. Al final de la batalla, selecciona uno de esos <code>objective markers</code>. Si controlas ese <code>objective marker</code>, puedes seleccionar hasta tres unidades de tu ejército que estén <code>within range</code> de ese <code>objective marker</code>. Cada una de esas unidades gana 2 <code>XP</code>.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>CLAVAR LA DAGA</h4>
-                        <p class="text-sm italic mb-2">Pocas misiones son tan peligrosas como romper las líneas enemigas frente a una oposición feroz.</p>
-                        <p>Al final de la batalla, puedes seleccionar hasta tres unidades de tu ejército (excluyendo <code>AIRCRAFT</code>) que estén totalmente a 6" del borde del campo de batalla de tu oponente (o totalmente dentro de su zona de despliegue si no hay borde). Cada una de esas unidades gana 3 <code>XP</code>.</p>
-                    </div>
-                    
-                    <div class="agenda-card">
-                        <h4>LIMPIAR LA ZONA</h4>
-                        <p class="text-sm italic mb-2">Es vital que tus fuerzas barran y limpien esta región rápidamente antes de seguir avanzando.</p>
-                        <p>Al inicio de la batalla, todos los <code>objective markers</code> están "en disputa". Al inicio de tu <code>Shooting phase</code>, puedes seleccionar una unidad que no esté <code>Battle-shocked</code> y sea elegible para disparar. Esa unidad es asignada para limpiar un objetivo (no puede disparar o cargar este turno). Al final de tu turno, si esa unidad está <code>within range</code> de un <code>objective marker</code> "en disputa" que controlas, ese <code>objective marker</code> se "asegura" y esa unidad gana 2 <code>XP</code>.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>OBSERVADORES AVANZADOS</h4>
-                        <p class="text-sm italic mb-2">Aquellas fuerzas capaces de deslizarse tras las líneas enemigas pueden reunir valiosa inteligencia.</p>
-                        <p>Al inicio de tu <code>Shooting phase</code>, puedes seleccionar una unidad que no esté <code>Battle-shocked</code>, que haya <code>Remained Stationary</code> y sea elegible para disparar. Esa unidad es asignada para realizar reconocimiento (no puede disparar o cargar este turno). Al final del próximo turno de tu oponente (o al final de la batalla), si esa unidad está totalmente dentro de la zona de despliegue de tu oponente, esa unidad gana 2 <code>XP</code> y tú ganas 1 <code>CP</code>.</p>
-                    </div>
-                    
-                    <div class="agenda-card">
-                        <h4>RECUPERAR ARCHIVOS DE MISIÓN</h4>
-                        <p class="text-sm italic mb-2">Arrebatar repositorios de datos vitales o coordinadores estratégicos de en medio de la batalla puede dar resultados valiosos.</p>
-                        <p>Al inicio de tu <code>Shooting phase</code>, puedes seleccionar una unidad <code>INFANTRY</code> o <code>MOUNTED</code> que no esté <code>Battle-shocked</code> y sea elegible para disparar. Esa unidad es asignada para recuperar archivos (no puede disparar o cargar este turno). Al final de tu turno, si esa unidad está <code>within range</code> de un <code>objective marker</code> que controlas (y que no está en tu zona de despliegue), tira 1D6: con 4-5, esa unidad gana 1 <code>XP</code>; con 6, esa unidad gana 2 <code>XP</code> y tú ganas 1 <code>CP</code>.</p>
-                    </div>
-
-                    <div class="agenda-card">
-                        <h4>CAZADOR DE PSÍQUICOS</h4>
-                        <p class="text-sm italic mb-2">Eliminar a aquellos enemigos capaces de luchar tanto en el plano físico como en el mental es un logro especialmente valioso.</p>
-                        <p>Cada vez que un modelo de tu ejército destruye una unidad <code>PSYKER</code> enemiga, la unidad de ese modelo gana 1 <code>XP</code>. Si la unidad <code>destroyed</code> es un <code>CHARACTER</code>, la unidad de ese modelo gana 1 <code>XP</code> adicional.</p>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Armería de Campaña -->
-            <div>
-                <h3 class="section-title text-2xl mb-6">Armería de Hephaestos VII (Recompensas)</h3>
-                <p class="text-gray-300 mb-6">
-                    Como recompensa por sus hazañas, puedes otorgar a tus unidades equipo especial o reliquias descubiertas en las forjas arcanas de Hephaestos VII. Un <code>CHARACTER</code> no puede tener más de una Reliquia.
-                </p>
-
-                <!-- Artificer Relics -->
-                <div class="mb-8">
-                    <h4 class="text-xl font-bold text-gray-100 mb-4">Artificer Relics</h4>
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th>Reliquia</th>
-                                    <th>Reglas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>MEDALLÓN CARMESÍ</strong><br>
-                                        <span class="text-sm italic">Una condecoración que también funciona como un enlace de mando cogitador.</span>
-                                    </td>
-                                    <td>
-                                        Al inicio de tu <code>Command phase</code>, si el portador está <code>within range</code> de un <code>objective marker</code> que controlas, tira 1D6: con 4+, ganas 1 <code>CP</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>GLÁNDULA BIO-ASTILLA</strong><br>
-                                        <span class="text-sm italic">Un saco carnoso que, al activarse, libera energía que confunde a los atacantes.</span>
-                                    </td>
-                                    <td>
-                                        Cada vez que la unidad del portador termina un <code>Charge move</code>, selecciona una unidad enemiga en <code>Engagement Range</code>. Hasta el final del turno, resta 1 al <code>Hit roll</code> de los ataques de esa unidad.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>ARMA DE ARTÍFICE</strong><br>
-                                        <span class="text-sm italic">Una herramienta de destrucción sublime, única en su especie.</span>
-                                    </td>
-                                    <td>
-                                        Selecciona un arma del portador (que no sea ya una Reliquia). Dale un nombre. Esa arma ahora es una <code>Crusade Relic</code> y, con un <code>Critical Hit</code>, inflige 1 <code>mortal wound</code> además del daño normal.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>ARMADURA OBRA MAESTRA</strong><br>
-                                        <span class="text-sm italic">Forjada por un armero de habilidad sublime, es a prueba de las armas más letales.</span>
-                                    </td>
-                                    <td>
-                                        Suma 1 a las tiradas de <code>armour saving throws</code> hechas para el portador.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Antiquity Relics -->
-                <div class="mb-8">
-                    <h4 class="text-xl font-bold text-gray-100 mb-4">Antiquity Relics</h4>
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th>Reliquia</th>
-                                    <th>Reglas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>SELLO DE AUTORIDAD</strong><br>
-                                        <span class="text-sm italic">Un icono de autoridad que contiene un poderoso comunicador.</span>
-                                    </td>
-                                    <td>
-                                        Una vez por <code>battle round</code>, si el portador está en el campo de batalla cuando usas un <code>Stratagem</code> de tipo <code>Strategic Ploy</code>, puedes usar ese <code>Stratagem</code> sin gastar <code>CP</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>CRANIUM OBSCURA</strong><br>
-                                        <span class="text-sm italic">Un relicario que contiene restos pulverizados que consternan a los psíquicos.</span>
-                                    </td>
-                                    <td>
-                                        No puede ser equipado por <code>PSYKER</code>. Cada vez que un <code>Psychic Attack</code> tiene como objetivo la unidad del portador, resta 1 al <code>Hit roll</code> de ese ataque.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>MANTO DE ASTILLAS SOMBRÍAS</strong><br>
-                                        <span class="text-sm italic">Una capa que atrapa la luz de formas extrañas, envolviendo al portador en oscuridad.</span>
-                                    </td>
-                                    <td>
-                                        A menos que el portador sea parte de una <code>Attached unit</code> al inicio de la batalla, tiene la habilidad <code>Lone Operative</code>.
-                                    </td>
-Next user query:
-"El rasgo 5 de mounted no me agrada, cámbialo por un re despliegue después de disparar pero que no pueda cargar"
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>FAROL DEL ODIO</strong><br>
-                                        <span class="text-sm italic">Un antiguo brasero arcano, un faro de odio hacia el xeno.</span>
-                                    </td>
-                                    <td>
-                                        Al inicio de la <code>Movement phase</code> de tu oponente, por cada unidad enemiga (excluyendo <code>IMPERIUM</code> y <code>CHAOS</code>) en <code>Engagement Range</code> del portador, tira 1D6: con 4+, esa unidad no puede ser seleccionada para <code>Fall Back</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>FRAGMENTO DE LUZ MORTAL</strong><br>
-                                        <span class="text-sm italic">Se dice que este cristal está impregnado de las energías de las almas partidas.</span>
-                                    </td>
-                                    <td>
-                                        Solo <code>PSYKER</code>. Cada vez que el portador hace un <code>Psychic Attack</code>, suma 1 al <code>Wound roll</code> de ese ataque.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>NANO-MED ARCANOTECNOLÓGICO</strong><br>
-                                        <span class="text-sm italic">Un cofre de hierro que desata millones de autómata microscópicos para reparar heridas catastróficas.</span>
-                                    </td>
-                                    <td>
-                                        Solo <code>INFANTRY</code>. La primera vez que el portador es <code>destroyed</code>, puedes tirar 1D6 al final de la fase: con 4+, pon al portador de nuevo en el campo de batalla con D3 heridas restantes.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- Legendary Relics -->
-                <div class="mb-8">
-                    <h4 class="text-xl font-bold text-gray-100 mb-4">Legendary Relics</h4>
-                    <div class="relic-table">
-                        <table class="w-full">
-                            <thead>
-                                <tr>
-                                    <th>Reliquia</th>
-                                    <th>Reglas</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <strong>CAMPO DE PRISMA FANTASMAL</strong><br>
-                                        <span class="text-sm italic">Un antiguo campo de fuerza que saca al portador de fase, permitiéndole moverse como un fantasma.</span>
-                                    </td>
-                                    <td>
-                                        El portador puede moverse horizontalmente a través de modelos y <code>terrain features</code>. Si lo hace al hacer <code>Fall Back</code>, no necesita hacer test de <code>Desperate Escape</code>. Después de moverse, selecciona una unidad enemiga que haya atravesado: con 2+, esa unidad sufre D3 <code>mortal wounds</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>VÉRTEBRA DE MANDO</strong><br>
-                                        <span class="text-sm italic">Una masa retorcida de fibras que crea una conexión neural entre el portador y otro.</span>
-                                    </td>
-                                    <td>
-                                        Al inicio de tu <code>Command phase</code>, selecciona otro modelo amigo en el campo de batalla y elige una de sus habilidades <code>Aura</code>. Hasta tu próxima <code>Command phase</code>, el portador tiene esa habilidad <code>Aura</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>GRANADA VÓRTICE</strong><br>
-                                        <span class="text-sm italic">Tecnología tan arcana y peligrosa que su uso rara vez es sancionado.</span>
-                                    </td>
-                                    <td>
-                                        Una vez por batalla. Rango 6", Asalto, 1A, BS 2+. Si impacta, el objetivo sufre 3D3 <code>mortal wounds</code>. Luego, tira 1D6 por cada otra unidad a 6" del objetivo: con 4+, esa unidad sufre D3 <code>mortal wounds</code>.
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <strong>RUPTOR DE CAMPO NULO</strong><br>
-                                        <span class="text-sm italic">Pulsaciones de quietud energética que anulan las defensas esotéricas.</span>
-                                    </td>
-                                    <td>
-                                        Cada vez que el portador hace un ataque melee, no se pueden realizar <code>invulnerable saving throws</code> contra ese ataque.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-gray-900 mt-12">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
-        </div>
-    </footer>
+<footer class="bg-gray-900 mt-12">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+<p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
+</div>
+</footer>
 
 </body>
 
 </html>
-

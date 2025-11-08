@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campaña Warhammer 40k: El Crisol de Varrus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            /* Gris oscuro */
+            color: #E5E7EB;
+            /* Gris claro */
+        }
+        /* --- ESTILOS CLAVE DEL MENÚ --- */
+#menu-lateral {
+position: sticky;
+/* Fija el menú al hacer scroll */
+top: 20px;
+background-color: #1F2937;
+border: 1px solid #374151;
+border-radius: 0.5rem;
+padding: 1rem;
+max-height: 80vh;
+overflow-y: auto;
+}
+
+#menu-lateral a {
+display: block;
+padding: 0.75rem 1rem;
+margin-bottom: 0.5rem;
+border-radius: 0.25rem;
+text-decoration: none;
+font-weight: 700;
+color: #D1D5DB;
+transition: background-color 0.2s, color 0.2s;
+border-left: 4px solid transparent; /* Base para el color de facción */
+}
+
+#menu-lateral a:hover {
+background-color: #374151;
+color: #F9FAFB;
+transform: translateX(5px);
+}
+        .header-bg {
+            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: multiply;
+            background-color: rgba(31, 41, 55, 0.7);
+            /* Overlay oscuro */
+        }
+
+        .grimdark-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            /* Black */
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #F9FAFB;
+            /* Blanco casi puro */
+            text-shadow:
+                0 0 5px #F9FAFB,
+                0 0 10px #F9FAFB,
+                0 0 20px #DC2626,
+                /* Rojo */
+                0 0 30px #DC2626;
+            animation: flicker 3s infinite alternate;
+        }
+
+        .card {
+            background-color: #1F2937;
+            /* Gris más oscuro */
+            border: 1px solid #374151;
+            /* Borde sutil */
+            border-radius: 0.5rem;
+            /* Esquinas redondeadas */
+            overflow: hidden;
+            /* Para que la imagen no se salga */
+        }
+
+        .card-header {
+            background-color: #374151;
+            /* Cabecera de la tarjeta */
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #4B5563;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h4 {
+            color: #F3F4F6;
+            /* Blanco */
+            font-weight: 700;
+        }
+
+        .card-body p {
+            color: #D1D5DB;
+            /* Gris más claro */
+        }
+
+        .section-title {
+            font-weight: 900;
+            color: #F3F4F6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #DC2626;
+            /* Rojo */
+            padding-bottom: 0.5rem;
+        }
+
+        .agenda-card {
+            background-color: #1F2937;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .agenda-card:hover {
+            border-color: #DC2626;
+            box-shadow: 0 0 15px rgba(220, 38, 38, 0.3);
+        }
+
+        .agenda-card h4 {
+            color: #F3F4F6;
+            font-weight: 700;
+        }
+
+        .agenda-card p {
+            color: #D1D5DB;
+        }
+
+        .agenda-card code {
+            background-color: #111827;
+            color: #F3F4F6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+        }
+        
+        .agenda-card li {
+            position: relative;
+            padding-left: 1.25rem;
+        }
+        
+        .agenda-card li::before {
+            content: '»';
+            position: absolute;
+            left: 0;
+            color: #DC2626; /* Rojo */
+            font-weight: 900;
+        }
+
+        .relic-table {
+            background-color: #1F2937;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #374151;
+        }
+
+        .relic-table th,
+        .relic-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid #374151;
+        }
+
+        .relic-table th {
+            background-color: #374151;
+            color: #F9FAFB;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .relic-table td {
+            color: #D1D5DB;
+        }
+
+        .relic-table td code {
+            background-color: #4B5563;
+            color: #F3F4F6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            font-weight: 700;
+        }
+
+        .relic-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        @keyframes flicker {
+            0%,
+            100% {
+                text-shadow:
+                    0 0 5px #F9FAFB,
+                    0 0 10px #F9FAFB,
+                    0 0 20px #DC2626,
+                    0 0 30px #DC2626;
+            }
+
+            50% {
+                text-shadow:
+                    0 0 10px #F9FAFB,
+                    0 0 15px #DC2626,
+                    0 0 25px #DC2626;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- Encabezado -->
+    <header class="header-bg relative">
+        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+        <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="grimdark-title text-4xl sm:text-5xl md:text-6xl">
+                Campaña: El Crisol de Varrus
+            </h1>
+            <p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+                Un Mundo Forja al borde de la guerra. Traición, sangre y acero os esperan.
+            </p>
+                        <a href="index.html" class="mt-4 inline-block text-sm text-red-400 hover:text-red-300 font-bold border border-red-400 px-4 py-2 rounded">
+                ← Volver al Tablero de Campaña
+            </a>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+
+
+
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+       
+
+
+        <!-- Reglas de Campaña Adicionales -->
+        <section class="mb-12">
+            <h2 class="section-title text-3xl mb-6">Reglas de Campaña Adicionales</h2>
+            <p class="text-lg text-gray-300 mb-8">
+                Las siguientes reglas se aplican después de cada batalla para determinar las recompensas y beneficios.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <div class="agenda-card">
+                    <h4>Liderazgo Veterano</h4>
+                    <p class="text-sm italic mb-2">La presencia del comandante en el campo de batalla inspira a las tropas a aprender de la victoria.</p>
+                    <p>Si tu <code>WARLORD</code> sobrevivió a la batalla Y tú ganaste la batalla, puedes usar la siguiente habilidad al actualizar tu Hoja de Orden de Batalla:</p>
+                    <ul class="list-none space-y-2 mt-2">
+                        <li>Al ganar un <code>Battle Trait</code> para <strong>una sola unidad</strong> (por subir de rango o por una Requisición), puedes elegir el resultado de la tabla de <code>Battle Trait</code> de esta campaña o de las tablas de <code>Battle Trait</code> específicas de tu ejército (si existen).</li>
+                        <li><strong>Coste:</strong> <code>1 RP</code> si la unidad es <code>INFANTRY</code>.</li>
+                        <li><strong>Coste:</strong> <code>2 RP</code> si la unidad es <code>VEHICLE</code> o <code>MOUNTED</code>.</li>
+                        <li>Esta habilidad no puede usarse en unidades <code>CHARACTER</code>.</li>
+                    </ul>
+                </div>
+
+                <div class="agenda-card">
+                    <h4>Inspiración del Comandante</h4>
+                    <p class="text-sm italic mb-2">El ejemplo de tu Warlord te permite guiar el destino de tus tropas con más certeza después del combate.</p>
+                    <p>Si tu <code>WARLORD</code> sobrevivió a la batalla (independientemente de si ganaste o perdiste):</p>
+                    <ul class="list-none space-y-2 mt-2">
+                        <li>Ganas una "Repetición de Destino" gratuita para usar durante la fase de actualización post-batalla.</li>
+                        <li>Puedes usar esta repetición una vez para repetir cualquier tirada que hagas (p.ej., una tirada de <code>Out of Action</code>, <code>Battle Scar</code>, <code>Battle Trait</code>, etc.) al actualizar tu Hoja de Orden de Batalla.</li>
+                    </ul>
+                </div>
+
+                <div class="agenda-card">
+                    <h4>Intervención del Destino</h4>
+                    <p class="text-sm italic mb-2">A veces, el destino debe ser forzado, pagando un precio para reescribir un fracaso.</p>
+                    <p>Durante la fase de actualización post-batalla, puedes gastar <code>RP</code> para repetir una sola tirada que hayas hecho (p.ej., <code>Battle Scar</code>, <code>Battle Trait</code>, etc.).</p>
+                    <ul class="list-none space-y-2 mt-2">
+                        <li><strong>1er Uso (en esta fase post-batalla):</strong> Cuesta <code>1 RP</code>.</li>
+                        <li><strong>2º Uso (en esta fase post-batalla):</strong> Cuesta <code>2 RP</code>.</li>
+                        <li><strong>3er Uso y subsecuentes:</strong> Cuesta <code>3 RP</code> cada uno.</li>
+                        <li>El coste se reinicia a 1 RP en la siguiente fase post-batalla. Esto es adicional a cualquier repetición gratuita de "Inspiración del Comandante".</li>
+                    </ul>
+                </div>
+                
+                <div class="agenda-card">
+                    <h4>Ganancias de Requisición (RP)</h4>
+                    <p class="text-sm italic mb-2">Los recursos se ganan a través del derramamiento de sangre y la conquista.</p>
+                    <p>Al final de cada batalla, calcula los <code>Puntos de Requisición (RP)</code> ganados de la siguiente manera:</p>
+                    <ul class="list-none space-y-2 mt-2">
+                        <li><strong>Participar en una Batalla:</strong> Ganas <code>1 RP</code>.</li>
+                        <li><strong>Ganar la Batalla:</strong> Ganas <code>1 RP</code> adicional (para un total de 2 RP).</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+
+        
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
+
