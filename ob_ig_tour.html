@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoja de Servicio (Tour of Duty) - Astra Militarum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* Estilos Grimdark (Adaptados para IG) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #111827;
+            color: #E5E7EB;
+        }
+
+        .header-bg {
+            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=TOUR+OF+DUTY');
+            background-size: cover;
+            background-position: center;
+            background-blend-mode: multiply;
+            background-color: rgba(31, 41, 55, 0.7);
+        }
+
+        .grimdark-title {
+            font-family: 'Inter', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #F9FAFB;
+            text-shadow:
+                0 0 5px #F9FAFB,
+                0 0 10px #F9FAFB,
+                0 0 20px #DC2626,
+                0 0 30px #DC2626;
+            animation: flicker 3s infinite alternate;
+        }
+
+        .card {
+            background-color: #1F2937;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .section-title {
+            font-weight: 900;
+            color: #F3F4F6;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid #DC2626;
+            padding-bottom: 0.5rem;
+        }
+
+        /* Estilos de Facción */
+        .faction-ig { border-left: 4px solid #10B981; } /* Verde para Imperial Guard */
+        
+        /* Estilo para los contadores */
+        .stat-card {
+            background-color: #374151;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            border: 1px solid #4B5563;
+        }
+        
+        .stat-label {
+            font-weight: 700;
+            color: #9CA3AF; /* Gris claro */
+            text-transform: uppercase;
+            font-size: 0.8rem;
+        }
+        
+        .stat-value {
+            font-weight: 900;
+            font-size: 2.5rem;
+            color: #F9FAFB;
+            line-height: 1;
+        }
+        
+        /* Estilo para los botones +/- */
+        .control-button {
+            transition: transform 0.1s, opacity 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #1F2937; 
+            border: 1px solid #4B5563;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px; /* Círculo */
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .control-button:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+        
+        /* Barra de Estado (para reemplazar alerts) */
+        #status-message {
+            transition: opacity 0.5s ease-out;
+            opacity: 0;
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            z-index: 50;
+        }
+        #status-message.success {
+            background-color: #10B981; /* Verde */
+            color: #FFFFFF;
+            opacity: 1;
+        }
+        #status-message.error {
+            background-color: #EF4444; /* Rojo */
+            color: #FFFFFF;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+
+    <!-- BLOQUE JAVASCRIPT DINÁMICO (Conexión a Google Sheets "tod") -->
+    <script>
+        // ** URL DE TU GOOGLE APPS SCRIPT (Hoja "tod") **
+        // ¡DEBES PEGAR AQUÍ LA URL DE DESPLIEGUE DEL SCRIPT "tod"!
+        const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxYpi0oIkq4QXt41vOqRTw2x6pWkGL7s-S-FGmEzWmAQWTGmxMeh3GTcBEop7105BRZIA/exec"; 
+        
+        // ** COLA GLOBAL DE CAMBIOS PENDIENTES **
+        let updatesQueue = {}; 
+        let initialData = {}; // Almacenará los datos originales
+
+        // --- Cargar Datos Iniciales ---
+        async function fetchTourData() {
+            const loadingElement = document.getElementById('loading-message');
+            const saveButton = document.getElementById('save-changes-button');
+            loadingElement.textContent = 'Contactando con el Adeptus Administratum...';
+            updatesQueue = {}; // Reiniciar la cola
+
+            try {
+                const response = await fetch(APP_SCRIPT_URL);
+                if (!response.ok) throw new Error('Fallo al conectar con la Hoja de Servicio.');
+                
+                initialData = await response.json(); // Guardar los datos originales
+                
+                // Poblar todos los campos con los datos iniciales
+                updateUI(initialData);
+                
+                loadingElement.textContent = 'Hoja de Servicio cargada.';
+                saveButton.disabled = true;
+                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
+                
+            } catch (error) {
+                loadingElement.textContent = `ERROR: ${error.message}`;
+                showStatus(error.message, 'error');
+            }
+        }
+        
+        // --- Función para actualizar la Interfaz de Usuario ---
+        function updateUI(data) {
+            // Inputs (Objetivos)
+            const participarTotalEl = document.getElementById('participar_total');
+            participarTotalEl.value = data.participar_total;
+            participarTotalEl.dataset.initialValue = data.participar_total;
+
+            const ganarTotalEl = document.getElementById('ganar_total');
+            ganarTotalEl.value = data.ganar_total;
+            ganarTotalEl.dataset.initialValue = data.ganar_total;
+
+            // Contadores (Registro)
+            const participadasEl = document.getElementById('participadas');
+            participadasEl.textContent = data.participadas;
+            participadasEl.dataset.initialValue = data.participadas;
+
+            const victoriasEl = document.getElementById('victorias');
+            victoriasEl.textContent = data.victorias;
+            victoriasEl.dataset.initialValue = data.victorias;
+
+            const commendationEl = document.getElementById('commendation');
+            commendationEl.textContent = data.commendation;
+            commendationEl.dataset.initialValue = data.commendation;
+
+            // Especialistas (Límite 0-2)
+            const lexmechanicusEl = document.getElementById('lexmechanicus');
+            lexmechanicusEl.textContent = data.lexmechanicus;
+            lexmechanicusEl.dataset.initialValue = data.lexmechanicus;
+
+            const materielEl = document.getElementById('materiel');
+            materielEl.textContent = data.materiel;
+            materielEl.dataset.initialValue = data.materiel;
+
+            const titheEl = document.getElementById('tithe');
+            titheEl.textContent = data.tithe;
+            titheEl.dataset.initialValue = data.tithe;
+
+            const moraleEl = document.getElementById('morale');
+            moraleEl.textContent = data.morale;
+            moraleEl.dataset.initialValue = data.morale;
+        }
+
+        // --- Añadir a la cola (para botones +/-) ---
+        function addToQueue(field, amount) {
+            const valueElement = document.getElementById(field);
+            let currentValue = parseInt(valueElement.textContent);
+            let newValue = currentValue + amount;
+            
+            // Aplicar límites visualmente ANTES de guardar
+            const limitedFields = ['lexmechanicus', 'materiel', 'tithe', 'morale'];
+            if (limitedFields.includes(field)) {
+                newValue = Math.max(0, Math.min(2, newValue));
+            } else {
+                newValue = Math.max(0, newValue);
+            }
+
+            valueElement.textContent = newValue; // Actualizar UI
+            handleQueueUpdate(field, newValue, valueElement.dataset.initialValue);
+        }
+
+        // --- Añadir a la cola (para inputs <input>) ---
+        function addInputToQueue(field) {
+            const inputElement = document.getElementById(field);
+            let newValue = parseInt(inputElement.value);
+            
+            // Aplicar límites visualmente
+            newValue = Math.max(0, newValue); 
+            inputElement.value = newValue; // Corregir el input si el usuario puso negativo
+            
+            handleQueueUpdate(field, newValue, inputElement.dataset.initialValue);
+        }
+        
+        // --- Lógica central de la cola de cambios ---
+        function handleQueueUpdate(field, newValue, initialValueStr) {
+            const saveButton = document.getElementById('save-changes-button');
+            const initialValue = parseInt(initialValueStr);
+
+            // Si el valor final es igual al inicial, eliminarlo de la cola
+            if (newValue === initialValue) {
+                delete updatesQueue[field];
+            } else {
+                // Si no, añadirlo o actualizarlo
+                updatesQueue[field] = {
+                    field: field,
+                    value: newValue
+                };
+            }
+            
+            // Actualizar el botón
+            const pendingCount = Object.keys(updatesQueue).length;
+            saveButton.disabled = pendingCount === 0;
+            saveButton.textContent = `Guardar Cambios (${pendingCount} Pendientes)`;
+        }
+
+        // --- Enviar el POST al Apps Script (Guardado por Lote) ---
+        async function sendUpdates() {
+            const saveButton = document.getElementById('save-changes-button');
+            saveButton.disabled = true;
+            saveButton.textContent = 'Guardando... No recargar!';
+
+            // Convertir el objeto a un array
+            const changesArray = Object.values(updatesQueue);
+            
+            if (changesArray.length === 0) {
+                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
+                return;
+            }
+
+            try {
+                const response = await fetch(APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({
+                        action: 'UPDATE_BATCH', // Usamos una nueva acción
+                        changes: changesArray
+                    })
+                });
+                
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('Hoja de Servicio actualizada.', 'success');
+                    location.reload(); // Recargar todo
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                showStatus(`Error al guardar: ${error.message}`, 'error');
+                saveButton.textContent = 'ERROR DE GUARDADO';
+                saveButton.disabled = false;
+            }
+        }
+        
+        // --- Resetear el Tour of Duty ---
+        async function resetTour() {
+            showStatus('Reiniciando Hoja de Servicio...', 'error');
+            
+            try {
+                const response = await fetch(APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify({ action: 'RESET' })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('Hoja de Servicio Reiniciada.', 'success');
+                    location.reload(); // Recargar los datos (ahora serán 0)
+                } else {
+                    throw new Error(result.error);
+                }
+            } catch (error) {
+                showStatus(`Error al reiniciar: ${error.message}`, 'error');
+            }
+        }
+
+        // --- Notificador (Reemplaza Alert) ---
+        function showStatus(message, type = 'success') {
+            const statusElement = document.getElementById('status-message');
+            statusElement.textContent = message;
+            statusElement.className = type; 
+            
+            setTimeout(() => {
+                if(statusElement.textContent === message) { // Solo ocultar si el mensaje no ha cambiado
+                    statusElement.style.opacity = '0';
+                }
+            }, 3000);
+            
+            // Forzar re-aparición si se llama rápidamente
+            statusElement.style.opacity = '1';
+        }
+
+        window.onload = fetchTourData;
+    </script>
+    
+    <!-- HEADER -->
+    <header class="header-bg relative">
+        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+        <div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="grimdark-title text-3xl sm:text-4xl">
+                ⚙️ HOJA DE SERVICIO (TOUR OF DUTY)
+            </h1>
+            <p class="mt-4 text-lg text-gray-300">
+                Astra Militarum - Regimiento 501º
+            </p>
+            <a href="ob_ig.html" class="mt-4 inline-block text-sm text-red-400 hover:text-red-300 font-bold border border-red-400 px-4 py-2 rounded">
+                ← Volver al Orden de batalla
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- CONTENEDOR PRINCIPAL DEL TOUR OF DUTY -->
+        <section class="card p-6 faction-ig">
+            <h3 class="text-3xl font-bold text-green-400 mb-4">Registro de Servicio (Hoja: tod)</h3>
+            <p id="loading-message" class="text-lg text-red-400 mb-6">Cargando datos...</p>
+            
+            <!-- SECCIÓN 1: OBJETIVOS DE BATALLA (Inputs) -->
+            <div class="mb-8">
+                <h4 class="text-xl section-title mb-4">Objetivos de Batalla</h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    
+                    <!-- Objetivo: Participar -->
+                    <div class="stat-card">
+                        <label for="participar_total" class="stat-label">Batallas a Participar (Total)</label>
+                        <input type="number" id="participar_total" min="0" value="0" 
+                               onchange="addInputToQueue('participar_total')"
+                               class="stat-value w-full bg-transparent text-center border-0 p-0 focus:ring-0">
+                    </div>
+                    
+                    <!-- Objetivo: Ganar -->
+                    <div class="stat-card">
+                        <label for="ganar_total" class="stat-label">Batallas a Ganar (Total)</label>
+                        <input type="number" id="ganar_total" min="0" value="0" 
+                               onchange="addInputToQueue('ganar_total')"
+                               class="stat-value w-full bg-transparent text-center border-0 p-0 focus:ring-0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: REGISTRO DE BATALLA (Contadores) -->
+            <div class="mb-8">
+                <h4 class="text-xl section-title mb-4">Registro de Batalla</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <!-- Participadas -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Batallas Participadas</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('participadas', -1)" class="control-button text-red-400">-</button>
+                            <span id="participadas" class="stat-value">0</span>
+                            <button onclick="addToQueue('participadas', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Victorias -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Victorias</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('victorias', -1)" class="control-button text-red-400">-</button>
+                            <span id="victorias" class="stat-value">0</span>
+                            <button onclick="addToQueue('victorias', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+
+                    <!-- Commendation -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Commendation Points</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('commendation', -1)" class="control-button text-red-400">-</button>
+                            <span id="commendation" class="stat-value">0</span>
+                            <button onclick="addToQueue('commendation', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: ESPECIALISTAS DE APOYO (Límite 0-2) -->
+            <div class="mb-8">
+                <h4 class="text-xl section-title mb-4">Especialistas de Apoyo (Límite: 2)</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    
+                    <!-- Lexmechanicus -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Lexmechanicus</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('lexmechanicus', -1)" class="control-button text-red-400">-</button>
+                            <span id="lexmechanicus" class="stat-value">0</span>
+                            <button onclick="addToQueue('lexmechanicus', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+                    <!-- Materiel -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Materiel</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('materiel', -1)" class="control-button text-red-400">-</button>
+                            <span id="materiel" class="stat-value">0</span>
+                            <button onclick="addToQueue('materiel', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+                    <!-- Tithe -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Tithe</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('tithe', -1)" class="control-button text-red-400">-</button>
+                            <span id="tithe" class="stat-value">0</span>
+                            <button onclick="addToQueue('tithe', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+                    <!-- Morale -->
+                    <div class="stat-card text-center">
+                        <span class="stat-label">Morale</span>
+                        <div class="flex items-center justify-center space-x-4 mt-2">
+                            <button onclick="addToQueue('morale', -1)" class="control-button text-red-400">-</button>
+                            <span id="morale" class="stat-value">0</span>
+                            <button onclick="addToQueue('morale', 1)" class="control-button text-green-400">+</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Botón de Guardar Cambios (Guardado por Lote) -->
+        <div class="mt-8 text-center space-x-4">
+            <button 
+                id="save-changes-button"
+                onclick="sendUpdates()"
+                disabled
+                class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200 
+                       bg-green-700 text-white hover:bg-green-600 
+                       disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
+                Guardar Cambios (0 Pendientes)
+            </button>
+            
+            <button 
+                id="reset-button"
+                onclick="resetTour()"
+                class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200 
+                       bg-red-900 border border-red-700 text-white hover:bg-red-700">
+                Reiniciar Hoja de Servicio
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Barra de Estado (para notificaciones) -->
+    <div id="status-message" class=""></div>
+
+    <footer class="bg-gray-900 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+            <p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
+        </div>
+    </footer>
+
+</body>
+
+</html>
