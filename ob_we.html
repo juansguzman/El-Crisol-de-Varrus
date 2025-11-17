@@ -1,346 +1,302 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Cruzada - World Eaters (Dinámico)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>
-        /* Bloque de Estilos CSS Grimdark */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827;
-            color: #E5E7EB;
-        }
-
-        .header-bg {
-            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=ARCHIVOS+DE+CRUZADA');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
-            background-color: rgba(31, 41, 55, 0.7);
-        }
-
-        .grimdark-title {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #F9FAFB;
-            text-shadow:
-                0 0 5px #F9FAFB,
-                0 0 10px #F9FAFB,
-                0 0 20px #DC2626,
-                0 0 30px #DC2626;
-            animation: flicker 3s infinite alternate;
-        }
-
-        .card {
-            background-color: #1F2937;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .section-title {
-            font-weight: 900;
-            color: #F3F4F6;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #DC2626;
-            padding-bottom: 0.5rem;
-        }
-
-        /* Estilos de Facciones/Cajas */
-        .faction-we { border-left: 4px solid #EF4444; } /* Rojo para World Eaters */
-        .stat-box {
-            background-color: #374151;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .stat-box span {
-            display: block;
-            font-size: 1.5rem;
-            line-height: 1;
-            color: #F9FAFB;
-        }
-
-        /* Estilos de la tabla de datos dinámicos */
-        #units-list-table-body td {
-            vertical-align: middle;
-        }
-        .text-red-400 { color: #f87171; } /* Color para nombres de WE */
-        
-        /* Nuevo estilo para los botones de control (más grandes) */
-        .control-button {
-            transition: transform 0.1s, opacity 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #374151; 
-            border: 1px solid #4B5563;
-        }
-
-        .control-button:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista de Cruzada - World Eaters (Dinámico)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+/* Bloque de Estilos CSS Grimdark */
+body {
+font-family: 'Inter', sans-serif;
+background-color: #111827;
+color: #E5E7EB;
+}
+.header-bg {
+background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=ARCHIVOS+DE+CRUZADA');
+background-size: cover;
+background-position: center;
+background-blend-mode: multiply;
+background-color: rgba(31, 41, 55, 0.7);
+}
+.grimdark-title {
+font-family: 'Inter', sans-serif;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.1em;
+color: #F9FAFB;
+text-shadow:
+0 0 5px #F9FAFB,
+0 0 10px #F9FAFB,
+0 0 20px #DC2626,
+0 0 30px #DC2626;
+animation: flicker 3s infinite alternate;
+}
+.card {
+background-color: #1F2937;
+border: 1px solid #374151;
+border-radius: 0.5rem;
+overflow: hidden;
+}
+.section-title {
+font-weight: 900;
+color: #F3F4F6;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+border-bottom: 2px solid #DC2626;
+padding-bottom: 0.5rem;
+}
+/* Estilos de Facciones/Cajas */
+.faction-we { border-left: 4px solid #EF4444; } /* Rojo para World Eaters */
+.stat-box {
+background-color: #374151;
+padding: 0.5rem 1rem;
+border-radius: 0.25rem;
+font-weight: 700;
+text-align: center;
+}
+.stat-box span {
+display: block;
+font-size: 1.5rem;
+line-height: 1;
+color: #F9FAFB;
+}
+/* Estilos de la tabla de datos dinámicos */
+#units-list-table-body td {
+vertical-align: middle;
+}
+.text-red-400 { color: #f87171; } /* Color para nombres de WE */
+/* Nuevo estilo para los botones de control (más grandes) */
+.control-button {
+transition: transform 0.1s, opacity 0.1s;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: #374151;
+border: 1px solid #4B5563;
+}
+.control-button:hover {
+transform: scale(1.05);
+opacity: 0.9;
+}
+</style>
 </head>
-
 <body class="antialiased">
-
-    <script>
-        // ** URL DE TU GOOGLE APPS SCRIPT (Hoja WE) **
-        const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFd5d8kb0N3fDiKsRTxyP4u9tWmJBlIYBnbaZORGYFxmwPA3U0kyxX9c9PBklDiNi7/exec"; 
-        
-        // ** COLA GLOBAL DE CAMBIOS PENDIENTES **
-        let updatesQueue = {}; 
-
-        // ----------------------------------------------------------------------
-        // FUNCIONES DE MANEJO DE DATOS
-        // ----------------------------------------------------------------------
-
-        async function fetchAndRenderList() {
-            const loadingElement = document.getElementById('loading-message');
-            const listContainer = document.getElementById('units-list-table-body');
-            const saveButton = document.getElementById('save-changes-button');
-            
-            loadingElement.textContent = 'Buscando el favor de Khorne...';
-            listContainer.innerHTML = ''; 
-            updatesQueue = {}; 
-
-            try {
-                const response = await fetch(APP_SCRIPT_URL);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Fallo de red (${response.status}). Revisa Apps Script o permisos.`);
-                }
-                
-                const data = await response.json();
-                
-                let totalXP = 0;
-                let totalPC = 0;
-                let totalDestruidos = 0;
-                let html = '';
-                
-                if (data.length === 0) {
-                    loadingElement.textContent = 'Hoja WE vacía. Agrega unidades en tu Google Sheet.';
-                    return;
-                }
-
-                data.forEach(unit => {
-                    totalXP += parseInt(unit.xp) || 0;
-                    totalPC += parseInt(unit.pc) || 0;
-                    totalDestruidos += parseInt(unit.destruidos) || 0;
-                    
-                    const getRank = (xp) => {
-                        if (xp >= 71) return 'Leyenda';
-                        if (xp >= 51) return 'Heroe';
-                        if (xp >= 31) return 'Veterano';
-                        if (xp >= 6) return 'Combatiente';
-                        return 'Novato';
-                    };
-                    const rank = getRank(unit.xp);
-                    
-                    const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                    
-                    html += `
-                        <tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700" data-unit-name="${unit.nombre}">
-                            <th scope="row" class="px-3 py-2 font-medium whitespace-nowrap text-white">
-                                <strong class="text-red-400">${unit.nombre}</strong><br>
-                                <span class="text-xs text-gray-500">${unit.tipo}</span>
-                            </th>
-                            <td class="px-3 py-2 text-center text-yellow-400 font-bold">${unit.puntosBase}</td>
-                            <td class="px-3 py-2 text-center">${rank}</td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento', this)" data-type="xp" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
-                                    <span id="xp-${safeName}" data-initial-value="${unit.xp}">${unit.xp}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento', this)" data-type="xp" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
-                                </div>
-                            </td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento', this)" data-type="destruidos" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
-                                    <span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}">${unit.destruidos}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento', this)" data-type="destruidos" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
-                                </div>
-                            </td>
-                            <td class="px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento', this)" data-type="pc" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
-                                    <span id="pc-${safeName}" data-initial-value="${unit.pc}">${unit.pc}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento', this)" data-type="pc" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-                
-                listContainer.innerHTML = html;
-                loadingElement.textContent = 'Datos de la Cruzada cargados.';
-                
-                document.getElementById('total-pc').textContent = totalPC;
-                document.getElementById('total-xp').textContent = totalXP;
-                document.getElementById('total-destruidos').textContent = totalDestruidos;
-
-                saveButton.disabled = true;
-                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
-
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                loadingElement.textContent = `ERROR AL CARGAR DATOS: ${error.message}. ¡SANGRE PARA EL CÓDIGO! (Verifica tu Hoja WE y el Apps Script)`;
-            }
-        }
-
-        function addToQueue(nombreUnidad, campo, accion, buttonElement) {
-            const safeName = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-            const targetElement = document.getElementById(`${campo}-${safeName}`);
-            let currentValue = parseInt(targetElement.textContent);
-            const saveButton = document.getElementById('save-changes-button');
-            
-            let newValue = (accion === 'incremento') ? currentValue + 1 : Math.max(0, currentValue - 1);
-            
-            targetElement.textContent = newValue;
-
-            const key = `${nombreUnidad}_${campo}`;
-
-            if (!updatesQueue[key]) {
-                updatesQueue[key] = {
-                    nombreUnidad: nombreUnidad,
-                    campo: campo,
-                    valorInicial: parseInt(targetElement.dataset.initialValue),
-                    valorFinal: newValue
-                };
-            } else {
-                updatesQueue[key].valorFinal = newValue;
-            }
-
-            if (updatesQueue[key].valorFinal === updatesQueue[key].valorInicial) {
-                delete updatesQueue[key];
-            }
-
-            const pendingCount = Object.keys(updatesQueue).length;
-            saveButton.disabled = pendingCount === 0;
-            saveButton.textContent = `Guardar Cambios (${pendingCount} Pendientes)`;
-        }
-
-        async function sendUpdates() {
-            const saveButton = document.getElementById('save-changes-button');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Guardando... No recargar!';
-
-            const changesArray = Object.values(updatesQueue).map(item => ({
-                nombreUnidad: item.nombreUnidad,
-                campo: item.campo,
-                valor: item.valorFinal
-            }));
-            
-            if (changesArray.length === 0) {
-                saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
-                return;
-            }
-
-            try {
-                const response = await fetch(APP_SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(changesArray)
-                });
-                
-                const result = await response.json();
-
-                if (result.success) {
-                    alert(`¡Guardado exitoso! ${result.unidadesActualizadas} unidades modificadas.`);
-                    fetchAndRenderList(); 
-                } else {
-                    alert(`Error al guardar en el servidor: ${result.message}`);
-                    saveButton.textContent = 'ERROR DE GUARDADO';
-                }
-
-            } catch (error) {
-                console.error('Error al enviar actualizaciones:', error);
-                alert('Error de conexión. Revisa la Consola y el Apps Script.');
-                saveButton.textContent = 'FALLÓ EL ENVÍO';
-            }
-        }
-
-        window.onload = fetchAndRenderList;
-    </script>
-    
-    <header class="header-bg relative">
-        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-        <div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="grimdark-title text-3xl sm:text-4xl">
-                🩸 ARCHIVOS DE CRUZADA: WORLD EATERS
-            </h1>
-            <p class="mt-4 text-lg text-gray-300">
-                La Legión de Angron, en búsqueda de cráneos y sangre.
-            </p>
-            <a href="index.html" class="mt-4 inline-block text-sm text-red-400 hover:text-red-300 font-bold border border-red-400 px-4 py-2 rounded">
-                ← Volver al Tablero de Campaña
-            </a>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-
-        <section id="world-eaters-list" class="card p-6 faction-we">
-            <h3 class="text-3xl font-bold text-red-400 mb-4">Registro Activo (Hoja: WE)</h3>
-            <p id="loading-message" class="text-lg text-red-400 mb-6">Cargando datos...</p>
-            
-            <div class="grid grid-cols-3 gap-4 mb-8">
-                <div class="stat-box">Puntos de Cruzada (PC)<br><span id="total-pc">0</span></div>
-                <div class="stat-box">Puntos de Experiencia (PE)<br><span id="total-xp">0</span></div>
-                <div class="stat-box">Unidades Aniquiladas<br><span id="total-destruidos">0</span></div>
-            </div>
-            
-            <h4 class="text-xl section-title mb-4">Registro Detallado de Unidades</h4>
-
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm text-left text-gray-300">
-                    <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                        <tr>
-                            <th scope="col" class="px-3 py-2">Nombre / Tipo</th>
-                            <th scope="col" class="px-3 py-2 text-center">Puntos Base</th>
-                            <th scope="col" class="px-3 py-2 text-center">Rango</th>
-                            <th scope="col" class="px-3 py-2 text-center">Experiencia (XP)</th>
-                            <th scope="col" class="px-3 py-2 text-center">Enemigos Destruidos</th>
-                            <th scope="col" class="px-3 py-2 text-center">Puntos de Cruzada (PC)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="units-list-table-body">
-                        </tbody>
-                </table>
-            </div>
-        </section>
-
-        <div class="mt-8 text-center">
-            <button 
-                id="save-changes-button"
-                onclick="sendUpdates()"
-                disabled
-                class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200 
-                       bg-red-700 text-white hover:bg-red-600 
-                       disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
-                Guardar Cambios (0 Pendientes)
-            </button>
-        </div>
-        </main>
-
-    <footer class="bg-gray-900 mt-12">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
-        </div>
-    </footer>
-
+<script>
+// ** URL DE TU GOOGLE APPS SCRIPT (Hoja WE) **
+const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzFd5d8kb0N3fDiKsRTxyP4u9tWmJBlIYBnbaZORGYFxmwPA3U0kyxX9c9PBklDiNi7/exec";
+// ** COLA GLOBAL DE CAMBIOS PENDIENTES **
+let updatesQueue = {};
+// ----------------------------------------------------------------------
+// FUNCIONES DE MANEJO DE DATOS
+// ----------------------------------------------------------------------
+async function fetchAndRenderList() {
+const loadingElement = document.getElementById('loading-message');
+const listContainer = document.getElementById('units-list-table-body');
+const saveButton = document.getElementById('save-changes-button');
+loadingElement.textContent = 'Buscando el favor de Khorne...';
+listContainer.innerHTML = '';
+updatesQueue = {};
+try {
+const response = await fetch(APP_SCRIPT_URL);
+if (!response.ok) {
+const errorText = await response.text();
+throw new Error(`Fallo de red (${response.status}). Revisa Apps Script o permisos.`);
+}
+const data = await response.json();
+let totalXP = 0;
+let totalPC = 0;
+let totalDestruidos = 0;
+let html = '';
+if (data.length === 0) {
+loadingElement.textContent = 'Hoja WE vacía. Agrega unidades en tu Google Sheet.';
+return;
+}
+data.forEach(unit => {
+totalXP += parseInt(unit.xp) || 0;
+totalPC += parseInt(unit.pc) || 0;
+totalDestruidos += parseInt(unit.destruidos) || 0;
+const getRank = (xp) => {
+if (xp >= 71) return 'Leyenda';
+if (xp >= 51) return 'Heroe';
+if (xp >= 31) return 'Veterano';
+if (xp >= 6) return 'Combatiente';
+return 'Novato';
+};
+const rank = getRank(unit.xp);
+const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+html += `
+<tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700" data-unit-name="${unit.nombre}">
+<th scope="row" class="px-3 py-2 font-medium whitespace-nowrap text-white">
+<strong class="text-red-400">${unit.nombre}</strong><br>
+<span class="text-xs text-gray-500">${unit.tipo}</span>
+</th>
+<td class="px-3 py-2 text-center text-yellow-400 font-bold">${unit.puntosBase}</td>
+<td class="px-3 py-2 text-center">${rank}</td>
+<td class="px-3 py-2 text-center">
+<div class="flex items-center justify-center space-x-2">
+<button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento', this)" data-type="xp" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
+<span id="xp-${safeName}" data-initial-value="${unit.xp}">${unit.xp}</span>
+<button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento', this)" data-type="xp" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
+</div>
+</td>
+<td class="px-3 py-2 text-center">
+<div class="flex items-center justify-center space-x-2">
+<button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento', this)" data-type="destruidos" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
+<span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}">${unit.destruidos}</span>
+<button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento', this)" data-type="destruidos" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
+</div>
+</td>
+<td class="px-3 py-2 text-center">
+<div class="flex items-center justify-center space-x-2">
+<button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento', this)" data-type="pc" class="control-button w-6 h-6 rounded-full text-xl text-red-500 hover:text-red-400">-</button>
+<span id="pc-${safeName}" data-initial-value="${unit.pc}">${unit.pc}</span>
+<button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento', this)" data-type="pc" class="control-button w-6 h-6 rounded-full text-xl text-green-500 hover:text-green-400">+</button>
+</div>
+</td>
+</tr>
+`;
+});
+listContainer.innerHTML = html;
+loadingElement.textContent = 'Datos de la Cruzada cargados.';
+document.getElementById('total-pc').textContent = totalPC;
+document.getElementById('total-xp').textContent = totalXP;
+document.getElementById('total-destruidos').textContent = totalDestruidos;
+saveButton.disabled = true;
+saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
+} catch (error) {
+console.error('Error fetching data:', error);
+loadingElement.textContent = `ERROR AL CARGAR DATOS: ${error.message}. ¡SANGRE PARA EL CÓDIGO! (Verifica tu Hoja WE y el Apps Script)`;
+}
+}
+function addToQueue(nombreUnidad, campo, accion, buttonElement) {
+const safeName = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+const targetElement = document.getElementById(`${campo}-${safeName}`);
+let currentValue = parseInt(targetElement.textContent);
+const saveButton = document.getElementById('save-changes-button');
+let newValue = (accion === 'incremento') ? currentValue + 1 : Math.max(0, currentValue - 1);
+targetElement.textContent = newValue;
+const key = `${nombreUnidad}_${campo}`;
+if (!updatesQueue[key]) {
+updatesQueue[key] = {
+nombreUnidad: nombreUnidad,
+campo: campo,
+valorInicial: parseInt(targetElement.dataset.initialValue),
+valorFinal: newValue
+};
+} else {
+updatesQueue[key].valorFinal = newValue;
+}
+if (updatesQueue[key].valorFinal === updatesQueue[key].valorInicial) {
+delete updatesQueue[key];
+}
+const pendingCount = Object.keys(updatesQueue).length;
+saveButton.disabled = pendingCount === 0;
+saveButton.textContent = `Guardar Cambios (${pendingCount} Pendientes)`;
+}
+async function sendUpdates() {
+const saveButton = document.getElementById('save-changes-button');
+saveButton.disabled = true;
+saveButton.textContent = 'Guardando... No recargar!';
+const changesArray = Object.values(updatesQueue).map(item => ({
+nombreUnidad: item.nombreUnidad,
+campo: item.campo,
+valor: item.valorFinal
+}));
+if (changesArray.length === 0) {
+saveButton.textContent = 'Guardar Cambios (0 Pendientes)';
+return;
+}
+try {
+const response = await fetch(APP_SCRIPT_URL, {
+method: 'POST',
+mode: 'cors',
+headers: { 'Content-Type': 'text/plain' },
+body: JSON.stringify(changesArray)
+});
+const result = await response.json();
+if (result.success) {
+alert(`¡Guardado exitoso! ${result.unidadesActualizadas} unidades modificadas.`);
+fetchAndRenderList();
+} else {
+alert(`Error al guardar en el servidor: ${result.message}`);
+saveButton.textContent = 'ERROR DE GUARDADO';
+}
+} catch (error) {
+console.error('Error al enviar actualizaciones:', error);
+alert('Error de conexión. Revisa la Consola y el Apps Script.');
+saveButton.textContent = 'FALLÓ EL ENVÍO';
+}
+}
+window.onload = fetchAndRenderList;
+</script>
+<header class="header-bg relative">
+<div class="absolute inset-0 bg-gray-900 opacity-60"></div>
+<div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
+<h1 class="grimdark-title text-3xl sm:text-4xl">
+🩸 ARCHIVOS DE CRUZADA: WORLD EATERS
+</h1>
+<p class="mt-4 text-lg text-gray-300">
+La Legión de Angron, en búsqueda de cráneos y sangre.
+</p>
+<!-- CONTENEDOR DE BOTONES DE NAVEGACIÓN (MODIFICADO) -->
+<div class="mt-6 flex flex-col sm:flex-row justify-center items-center space-y-3 sm:space-y-0 sm:space-x-4">
+<!-- Botón 1: Volver al Menú Principal (Estilo Mejorado) -->
+<a href="index.html" class="inline-block text-base font-bold text-gray-300 hover:text-white border-2 border-gray-500 hover:bg-gray-700 px-6 py-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg">
+← Volver al Tablero
+</a>
+<!-- Botón 2: Ir al Contador de Cráneos (NUEVO) -->
+<a href="ob_we_skulls.html" class="inline-block text-base font-bold text-white bg-red-700 hover:bg-red-600 border-2 border-red-700 hover:border-red-600 px-6 py-3 rounded-lg transition duration-200 shadow-md hover:shadow-lg">
+Gestionar Diezmo de Cráneos 🩸
+</a>
+</div>
+<!-- FIN DEL CONTENEDOR DE BOTONES -->
+</div>
+</header>
+<main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+<section id="world-eaters-list" class="card p-6 faction-we">
+<h3 class="text-3xl font-bold text-red-400 mb-4">Registro Activo (Hoja: WE)</h3>
+<p id="loading-message" class="text-lg text-red-400 mb-6">Cargando datos...</p>
+<div class="grid grid-cols-3 gap-4 mb-8">
+<div class="stat-box">Puntos de Cruzada (PC)<br><span id="total-pc">0</span></div>
+<div class="stat-box">Puntos de Experiencia (PE)<br><span id="total-xp">0</span></div>
+<div class="stat-box">Unidades Aniquiladas<br><span id="total-destruidos">0</span></div>
+</div>
+<h4 class="text-xl section-title mb-4">Registro Detallado de Unidades</h4>
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-gray-300">
+<thead class="text-xs uppercase bg-gray-700 text-gray-400">
+<tr>
+<th scope="col" class="px-3 py-2">Nombre / Tipo</th>
+<th scope="col" class="px-3 py-2 text-center">Puntos Base</th>
+<th scope="col" class="px-3 py-2 text-center">Rango</th>
+<th scope="col" class="px-3 py-2 text-center">Experiencia (XP)</th>
+<th scope="col" class="px-3 py-2 text-center">Enemigos Destruidos</th>
+<th scope="col" class="px-3 py-2 text-center">Puntos de Cruzada (PC)</th>
+</tr>
+</thead>
+<tbody id="units-list-table-body">
+</tbody>
+</table>
+</div>
+</section>
+<div class="mt-8 text-center">
+<button
+id="save-changes-button"
+onclick="sendUpdates()"
+disabled
+class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200
+bg-red-700 text-white hover:bg-red-600
+disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
+Guardar Cambios (0 Pendientes)
+</button>
+</div>
+</main>
+<footer class="bg-gray-900 mt-12">
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
+<p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
+</div>
+</footer>
 </body>
-
 </html>
