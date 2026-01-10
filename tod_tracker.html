@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tour of Duty - Astra Militarum</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #111827; color: #E5E7EB; }
+        .grimdark-title { font-weight: 900; text-transform: uppercase; letter-spacing: 0.1em; color: #F9FAFB; text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); /* Sombra verde para IG */ }
+        .card { background-color: #1F2937; border: 1px solid #374151; border-radius: 0.5rem; padding: 1.5rem; }
+        .input-dark { background-color: #111827; border: 1px solid #4B5563; color: white; text-align: center; font-weight: bold; padding: 0.5rem; border-radius: 0.25rem; width: 60px; }
+        /* Botones de control */
+        .btn-control { width: 32px; height: 32px; border-radius: 9999px; display: flex; align-items: center; justify-content: center; font-weight: bold; transition: all 0.2s; }
+        .btn-minus { background-color: #374151; color: #F87171; border: 1px solid #EF4444; }
+        .btn-minus:hover { background-color: #4B5563; }
+        .btn-plus { background-color: #374151; color: #34D399; border: 1px solid #10B981; }
+        .btn-plus:hover { background-color: #4B5563; }
+        /* Barra de progreso */
+        .progress-bar-bg { background-color: #374151; height: 1.5rem; border-radius: 0.5rem; overflow: hidden; }
+        .progress-bar-fill { height: 100%; transition: width 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="antialiased p-6 bg-gray-900">
+
+    <script>
+        // ¡REEMPLAZA ESTA URL CON LA TUYA!
+        const API_URL = "https://script.google.com/macros/s/AKfycbyakbKth-niBK2ExT950tjvgdYUR9L4xghNGE-JZE-KGaKzFSnCOZ_fIQWYLpyOVLUClQ/exec";
+    </script>
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Botón de Retorno -->
+        <div class="mb-6">
+            <a href="ob_ig.html" class="inline-flex items-center text-sm text-green-400 hover:text-green-300 font-bold border border-green-900 hover:border-green-400 px-4 py-2 rounded transition-colors duration-200">
+                ← Volver al Orden de Batalla (IG)
+            </a>
+        </div>
+
+        <header class="mb-8 text-center">
+            <h1 class="grimdark-title text-4xl md:text-5xl mb-2">⚙️ Tour of Duty Tracker</h1>
+            <p class="text-green-500 font-bold uppercase tracking-widest">Astra Militarum - Logística de Campaña</p>
+        </header>
+
+        <div id="loading" class="text-center text-xl text-gray-400 py-12">Consultando al Departmento Munitorum...</div>
+
+        <div id="main-content" class="hidden space-y-8">
+            
+            <!-- SECCIÓN 1: OBJETIVOS DEL TOUR -->
+            <section class="card border-l-4 border-green-500">
+                <h2 class="text-2xl font-bold text-white mb-6 flex justify-between items-center">
+                    <span>Objetivos del Tour</span>
+                    <button onclick="resetTour()" class="text-xs bg-red-900/50 hover:bg-red-700 text-red-300 px-3 py-1 rounded border border-red-800 uppercase font-bold transition">
+                        ⚠️ Reiniciar Tour
+                    </button>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Progreso de Participación -->
+                    <div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-2">
+                            <span>Batallas Participadas</span>
+                            <span>Objetivo: <span id="target-participar">0</span></span>
+                        </div>
+                        <div class="progress-bar-bg mb-4">
+                            <div id="progress-participar" class="progress-bar-fill bg-blue-600" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-center items-center space-x-4">
+                            <span class="text-gray-400 text-sm">Actual:</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateValue('participadas', -1)" class="btn-control btn-minus">-</button>
+                                <input id="val-participadas" class="input-dark" readonly value="0">
+                                <button onclick="updateValue('participadas', 1)" class="btn-control btn-plus">+</button>
+                            </div>
+                            <span class="text-gray-400 text-sm mx-2">/</span>
+                            <span class="text-gray-400 text-sm">Meta:</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateValue('participar_total', -1)" class="btn-control btn-minus">-</button>
+                                <input id="val-participar_total" class="input-dark border-blue-500" readonly value="0">
+                                <button onclick="updateValue('participar_total', 1)" class="btn-control btn-plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Progreso de Victorias -->
+                    <div>
+                        <div class="flex justify-between text-sm text-gray-400 mb-2">
+                            <span>Victorias Logradas</span>
+                            <span>Objetivo: <span id="target-ganar">0</span></span>
+                        </div>
+                        <div class="progress-bar-bg mb-4">
+                            <div id="progress-ganar" class="progress-bar-fill bg-green-600" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-center items-center space-x-4">
+                            <span class="text-gray-400 text-sm">Actual:</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateValue('victorias', -1)" class="btn-control btn-minus">-</button>
+                                <input id="val-victorias" class="input-dark" readonly value="0">
+                                <button onclick="updateValue('victorias', 1)" class="btn-control btn-plus">+</button>
+                            </div>
+                            <span class="text-gray-400 text-sm mx-2">/</span>
+                            <span class="text-gray-400 text-sm">Meta:</span>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="updateValue('ganar_total', -1)" class="btn-control btn-minus">-</button>
+                                <input id="val-ganar_total" class="input-dark border-green-500" readonly value="0">
+                                <button onclick="updateValue('ganar_total', 1)" class="btn-control btn-plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 2: RECURSOS LOGÍSTICOS (0-2) -->
+            <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Lexmechanicus -->
+                <div class="card text-center">
+                    <h3 class="text-gray-400 text-sm font-bold uppercase mb-3">Lexmechanicus</h3>
+                    <div class="flex items-center justify-center space-x-3">
+                        <button onclick="updateLimitedValue('lexmechanicus', -1)" class="btn-control btn-minus">-</button>
+                        <span id="disp-lexmechanicus" class="text-3xl font-bold text-white">0</span>
+                        <button onclick="updateLimitedValue('lexmechanicus', 1)" class="btn-control btn-plus">+</button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Máx: 2</div>
+                </div>
+                <!-- Materiel -->
+                <div class="card text-center">
+                    <h3 class="text-gray-400 text-sm font-bold uppercase mb-3">Materiel</h3>
+                    <div class="flex items-center justify-center space-x-3">
+                        <button onclick="updateLimitedValue('materiel', -1)" class="btn-control btn-minus">-</button>
+                        <span id="disp-materiel" class="text-3xl font-bold text-white">0</span>
+                        <button onclick="updateLimitedValue('materiel', 1)" class="btn-control btn-plus">+</button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Máx: 2</div>
+                </div>
+                <!-- Tithe Pool -->
+                <div class="card text-center">
+                    <h3 class="text-gray-400 text-sm font-bold uppercase mb-3">Tithe Pool</h3>
+                    <div class="flex items-center justify-center space-x-3">
+                        <button onclick="updateLimitedValue('tithe', -1)" class="btn-control btn-minus">-</button>
+                        <span id="disp-tithe" class="text-3xl font-bold text-white">0</span>
+                        <button onclick="updateLimitedValue('tithe', 1)" class="btn-control btn-plus">+</button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Máx: 2</div>
+                </div>
+                <!-- Morale -->
+                <div class="card text-center">
+                    <h3 class="text-gray-400 text-sm font-bold uppercase mb-3">Morale</h3>
+                    <div class="flex items-center justify-center space-x-3">
+                        <button onclick="updateLimitedValue('morale', -1)" class="btn-control btn-minus">-</button>
+                        <span id="disp-morale" class="text-3xl font-bold text-white">0</span>
+                        <button onclick="updateLimitedValue('morale', 1)" class="btn-control btn-plus">+</button>
+                    </div>
+                    <div class="text-xs text-gray-500 mt-2">Máx: 2</div>
+                </div>
+            </section>
+
+            <!-- SECCIÓN 3: PUNTOS DE COMENDACIÓN -->
+            <section class="card bg-gray-800 flex flex-col items-center justify-center p-6 border border-yellow-600/50">
+                <h3 class="text-yellow-500 font-bold uppercase text-lg mb-4">Commendation Points</h3>
+                <div class="flex items-center space-x-6">
+                    <button onclick="updateValue('commendation', -1)" class="btn-control btn-minus w-12 h-12 text-xl">-</button>
+                    <span id="disp-commendation" class="text-6xl font-black text-white">0</span>
+                    <button onclick="updateValue('commendation', 1)" class="btn-control btn-plus w-12 h-12 text-xl">+</button>
+                </div>
+            </section>
+
+        </div> <!-- Fin Main Content -->
+    </div>
+
+    <script>
+        // Estado local
+        let appState = {};
+
+        async function loadData() {
+            try {
+                const response = await fetch(API_URL);
+                const data = await response.json();
+                if (data.error) throw new Error(data.error);
+                
+                appState = data;
+                renderUI();
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+            } catch (error) {
+                alert("Error cargando datos: " + error.message);
+            }
+        }
+
+        function renderUI() {
+            // Actualizar inputs y displays
+            for (const key in appState) {
+                const inputEl = document.getElementById(`val-${key}`);
+                const dispEl = document.getElementById(`disp-${key}`);
+                if (inputEl) inputEl.value = appState[key];
+                if (dispEl) dispEl.textContent = appState[key];
+            }
+
+            // Actualizar barras de progreso y textos objetivo
+            updateProgressBar('participar', appState.participadas, appState.participar_total);
+            updateProgressBar('ganar', appState.victorias, appState.ganar_total);
+            
+            document.getElementById('target-participar').textContent = appState.participar_total;
+            document.getElementById('target-ganar').textContent = appState.ganar_total;
+        }
+
+        function updateProgressBar(type, current, total) {
+            const bar = document.getElementById(`progress-${type}`);
+            const percentage = total > 0 ? Math.min(100, (current / total) * 100) : 0;
+            bar.style.width = `${percentage}%`;
+        }
+
+        // Función para actualizar valores normales (sin límite superior fijo, solo >= 0)
+        async function updateValue(field, change) {
+            let currentValue = parseInt(appState[field]) || 0;
+            let newValue = Math.max(0, currentValue + change);
+            
+            // Actualización optimista de la UI
+            appState[field] = newValue;
+            renderUI();
+            
+            await sendUpdate(field, newValue);
+        }
+
+        // Función para actualizar valores limitados (0-2)
+        async function updateLimitedValue(field, change) {
+            let currentValue = parseInt(appState[field]) || 0;
+            // Aplicar límite entre 0 y 2
+            let newValue = Math.max(0, Math.min(2, currentValue + change));
+            
+            if (newValue === currentValue) return; // No hacer nada si no cambia
+
+            // Actualización optimista
+            appState[field] = newValue;
+            renderUI();
+
+            await sendUpdate(field, newValue);
+        }
+
+        async function sendUpdate(field, value) {
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    body: JSON.stringify({ action: 'UPDATE', field: field, value: value })
+                });
+                // Opcional: Podrías recargar los datos aquí para asegurar sincronización, 
+                // pero la actualización optimista hace que se sienta más rápido.
+            } catch (error) {
+                console.error("Error guardando:", error);
+                // Si falla, podrías revertir el estado local aquí.
+            }
+        }
+
+        async function resetTour() {
+            if (confirm("¿CONFIRMAS EL REINICIO? Se borrarán todos los progresos del Tour actual.")) {
+                try {
+                    await fetch(API_URL, {
+                        method: 'POST',
+                        mode: 'cors',
+                        body: JSON.stringify({ action: 'RESET' })
+                    });
+                    loadData(); // Recargar todo tras el reset
+                } catch (error) {
+                    alert("Error al reiniciar: " + error.message);
+                }
+            }
+        }
+
+        // Iniciar
+        loadData();
+    </script>
+</body>
+</html>
