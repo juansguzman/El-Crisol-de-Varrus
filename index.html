@@ -1,314 +1,541 @@
-<!DOCTYPE html>
-<html lang="es">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Campaña Warhammer 40k: El Crisol de Varrus</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-<style>
-/* Estilos generales */
-body {
-font-family: 'Inter', sans-serif;
-background-color: #111827; /* Gris oscuro */
-color: #E5E7EB; /* Gris claro */
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COGITATOR: EL CRISOL DE VARRUS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #ff2222; /* Rojo para esta campaña de traición */
+            --primary-dim: #881111;
+            --primary-glow: rgba(255, 34, 34, 0.25);
+            --secondary: #ffaa00;
+            --bg-dark: #0a0505;
+            --bg-panel: rgba(15, 5, 5, 0.9);
+            --border: #2e0d0d;
+            --border-bright: #5c1a1a;
+            --text-main: #ffcccc;
+            --text-dim: #602a2a;
+            --danger: #ff2222;
+            --success: #00ff41;
+            --info: #00aaff;
+        }
 
-.header-bg {
-background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=Mundo+Forja+Hephaestos+VII');
-background-size: cover;
-background-position: center;
-background-blend-mode: multiply;
-background-color: rgba(31, 41, 55, 0.7);
-}
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
-.grimdark-title {
-font-family: 'Inter', sans-serif;
-font-weight: 900;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: #F9FAFB;
-text-shadow:
-0 0 5px #F9FAFB,
-0 0 10px #F9FAFB,
-0 0 20px #DC2626,
-0 0 30px #DC2626;
-animation: flicker 3s infinite alternate;
-}
+        body {
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
 
-.card {
-background-color: #1F2937;
-border: 1px solid #374151;
-border-radius: 0.5rem;
-overflow: hidden;
-}
+        /* SCANLINES & NOISE */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
+            pointer-events: none;
+            z-index: 10000;
+            animation: scanroll 10s linear infinite;
+        }
 
-.section-title {
-font-weight: 900;
-color: #F3F4F6;
-text-transform: uppercase;
-letter-spacing: 0.05em;
-border-bottom: 2px solid #DC2626;
-padding-bottom: 0.5rem;
-}
+        @keyframes scanroll {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
 
-/* --- ESTILOS DE BOTONES DE GALERÍA (FACTION BUTTONS) --- */
-.faction-button, .rules-button {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-text-align: center;
-padding: 2rem;
-height: 100%;
-min-height: 120px;
-border-radius: 0.5rem;
-font-weight: 900;
-text-transform: uppercase;
-transition: transform 0.2s, box-shadow 0.2s;
-text-decoration: none;
-color: #F9FAFB;
-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-}
+        .hud-vignette {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, transparent 40%, rgba(10,5,5,0.8) 100%);
+            pointer-events: none;
+            z-index: 9999;
+        }
 
-.faction-button:hover, .rules-button:hover {
-transform: translateY(-5px);
-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-}
+        /* HEADER */
+        .main-header {
+            border-bottom: 2px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            background: linear-gradient(to bottom, rgba(255,34,34,0.1), transparent);
+            backdrop-filter: blur(5px);
+        }
 
-/* Estilo de la IMAGEN dentro del botón */
-.faction-button img {
-    width: 64px; /* Tamaño del logo */
-    height: 64px;
-    margin-bottom: 10px;
-    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5)); /* Pequeño brillo */
-}
+        .main-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; width: 100%; height: 1px;
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+            animation: pulse 2s ease-in-out infinite;
+        }
 
-/* Colores de facción */
-.faction-sm { background-color: #1E3A8A; }
-.faction-sm:hover { background-color: #254FBB; }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
 
-.faction-ig { background-color: #065F46; }
-.faction-ig:hover { background-color: #087F5B; }
+        .title-container h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            letter-spacing: 0.5rem;
+            color: var(--primary);
+            text-shadow: 0 0 10px var(--primary), 0 0 20px rgba(255,34,34,0.5);
+            animation: flicker 5s infinite;
+        }
 
-.faction-we { background-color: #991B1B; }
-.faction-we:hover { background-color: #B92E2E; }
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 22%, 24%, 55% { opacity: 0.7; }
+        }
 
-.faction-dr { background-color: #5B21B6; }
-.faction-dr:hover { background-color: #6D28D9; }
+        .sub-readout {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            letter-spacing: 0.2rem;
+            margin-top: 0.5rem;
+        }
 
-/* Colores de Reglas */
-.rules-button {
-background-color: #374151; /* Gris oscuro para diferenciar de facciones */
-font-weight: 700;
-min-height: 80px;
-}
-.rules-button:hover {
-background-color: #4B5563;
-border: 1px solid #FBBF24;
-}
-.rules-button i {
-color: #FBBF24; /* Amarillo para icono de pergamino/trofeo */
-margin-bottom: 0.3rem;
-}
+        /* NAVIGATION */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.5);
+            border-bottom: 1px solid var(--border);
+            padding: 0.5rem;
+        }
 
-/* Estilos de las secciones de Acto/Briefing */
-.card-header {
-background-color: #374151;
-padding: 1rem 1.5rem;
-border-bottom: 1px solid #4B5563;
-}
-.card-body {
-padding: 1.5rem;
-}
-</style>
+        .nav-tab {
+            padding: 0.8rem 1.5rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+            background: var(--primary-glow);
+        }
+
+        .nav-tab.active {
+            color: var(--text-main);
+            border: 1px solid var(--primary);
+            background: var(--primary-glow);
+            box-shadow: inset 0 0 10px var(--primary-glow);
+        }
+
+        /* SECTIONS */
+        .content-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            display: none;
+        }
+
+        .content-container.active {
+            display: block;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-bottom: 2rem;
+        }
+
+        .panel::before, .panel::after {
+            content: '';
+            position: absolute;
+            width: 15px; height: 15px;
+            border: 2px solid var(--primary);
+        }
+        .panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+        .panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+
+        .panel-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--primary);
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* MAPA ESQUEMÁTICO (BLUEPRINT STYLE) */
+        #map-container {
+            position: relative;
+            width: 100%;
+            height: 700px;
+            background-color: #050a10;
+            background-image: 
+                linear-gradient(rgba(0, 170, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 170, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(rgba(0, 170, 255, 0.1) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(0, 170, 255, 0.1) 2px, transparent 2px);
+            background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
+            border: 2px solid var(--border);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.8);
+        }
+
+        #map-container::before {
+            content: "SCHEMATIC BASTIOR-HEPHAESTOS // TOPOGRAPHIC DATA ACTIVE";
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 0.7rem;
+            color: var(--info);
+            opacity: 0.5;
+        }
+
+        .hex-grid {
+            position: relative;
+            width: 900px;
+            height: 600px;
+        }
+
+        .hexagon {
+            position: absolute;
+            width: 120px;
+            height: 138px;
+            background: rgba(0, 170, 255, 0.05);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+            border: 1px solid rgba(0, 170, 255, 0.3);
+            text-align: center;
+            padding: 10px;
+            backdrop-filter: blur(2px);
+        }
+
+        .hexagon:hover {
+            background: rgba(0, 170, 255, 0.15);
+            transform: scale(1.05);
+            z-index: 10;
+            border-color: var(--info);
+            box-shadow: 0 0 20px rgba(0, 170, 255, 0.2);
+        }
+
+        .hex-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #fff;
+            text-transform: uppercase;
+            pointer-events: none;
+            text-shadow: 0 0 5px #000;
+        }
+
+        .hex-status {
+            font-size: 0.55rem;
+            color: var(--info);
+            margin-top: 5px;
+            font-weight: 400;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 4px;
+        }
+
+        /* Colores de Dominancia en Hexágonos */
+        .hex-sm { border: 2px solid #00aaff; background: rgba(0, 170, 255, 0.1); }
+        .hex-sm .hex-status { color: #00aaff; }
+
+        .hex-ig { border: 2px solid #00ff41; background: rgba(0, 255, 65, 0.1); }
+        .hex-ig .hex-status { color: #00ff41; }
+
+        .hex-we { border: 2px solid #ff2222; background: rgba(255, 34, 34, 0.1); }
+        .hex-we .hex-status { color: #ff2222; }
+
+        .hex-dr { border: 2px solid #aa00ff; background: rgba(170, 0, 255, 0.1); }
+        .hex-dr .hex-status { color: #aa00ff; }
+
+        .hex-contested { border: 2px dashed #ffff00; animation: pulse-border 2s infinite; }
+        @keyframes pulse-border {
+            0%, 100% { border-color: rgba(255, 255, 0, 0.3); }
+            50% { border-color: rgba(255, 255, 0, 1); }
+        }
+
+        /* FACTION CARDS */
+        .factions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .faction-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .faction-card:hover {
+            border-color: var(--primary);
+            background: var(--primary-glow);
+            transform: translateY(-5px);
+        }
+
+        .faction-icon {
+            width: 60px; height: 60px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .faction-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .faction-info h4 { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--primary); }
+        .faction-info p { font-size: 0.75rem; color: var(--text-dim); }
+
+        /* LORE CONTENT */
+        .lore-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .lore-text strong { color: var(--primary); }
+        .lore-text p { margin-bottom: 1.5rem; }
+
+        /* VOX LOG */
+        #vox-log {
+            background: #000;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            height: 150px;
+            overflow-y: auto;
+            font-size: 0.8rem;
+            color: var(--success);
+            margin-top: 2rem;
+        }
+
+        .log-entry { margin-bottom: 0.3rem; }
+        .log-time { color: var(--text-dim); margin-right: 10px; }
+
+    </style>
 </head>
-
 <body class="antialiased">
+    <div class="hud-vignette"></div>
 
-<header class="header-bg relative">
-<div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-<div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 text-center">
-<h1 class="grimdark-title text-4xl sm:text-5xl md:text-6xl">
-Campaña: El Crisol de Varrus
-</h1>
-<p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
-Un Mundo Forja al borde de la guerra. Traición, sangre y acero os esperan.
-</p>
-</div>
-</header>
-
-<main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-
-<h2 class="section-title text-3xl mb-8">Archivos de la Cruzada</h2>
-
-<section class="mb-10">
-<h3 class="text-2xl font-bold mb-6 text-red-400 text-center">Selecciona tu Fuerza de Combate</h3>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    
-    <a href="ob_sm.html" class="faction-button faction-sm">
-        <img src="Imagenes/raven_guard.png" alt="Raven Guard Icon" loading="lazy">
-        Space Marines
-      
-    </a>
-
-    <a href="ob_ig.html" class="faction-button faction-ig">
-        <img src="Imagenes/imperial_guard.png" alt="Imperial Guard Icon" loading="lazy">
-        Astra Militarum
-    </a>
-
-    <a href="ob_we.html" class="faction-button faction-we">
-        <img src="Imagenes/world_eaters.png" alt="World Eaters Icon" loading="lazy">
-        World Eaters
-       
-    </a>
-
-    <a href="ob_dru.html" class="faction-button faction-dr">
-        <img src="Imagenes/drukhari.png" alt="Drukhari Icon" loading="lazy">
-        Drukhari
-       
-    </a>
-</div>
-</section>
-<section class="pt-6 border-t border-gray-700 mb-12">
-    <h3 class="text-2xl font-bold mb-6 text-red-400 text-center">Reglas de Campaña</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
-        
-        <a href="reglas_a.html" class="rules-button">
-            <i>📜</i>
-            Reglas Adicionales
-        </a>
-        
-        <a href="progresion.html" class="rules-button">
-            <i>🏆</i>
-            Progresión y Agendas
-        </a>
-        
-    </div>
-</section>
-<div class="pt-8 border-t border-gray-700">
-    <h2 class="section-title text-3xl mb-6">Prólogo y Briefings de Campaña</h2>
-</div>
-
-<section class="mb-12">
-    <h3 class="text-2xl font-bold text-red-400 mb-4">Prólogo: El Mundo Forja Manchado</h3>
-    <div class="space-y-4 text-lg text-gray-300">
-        <p>
-            <strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja, dominadas por la capital, la <strong>Aguja Adamantina</strong>, producen armas y blindados para una docena de cruzadas imperiales.
-        </p>
-        <p>
-            Pero Hephaestos VII guarda un secreto. No está gobernado por el Adeptus Mechanicus, sino por un antiguo linaje de Rogue Traders, los <strong>Varrus</strong>. El actual regente, el <strong>Gobernador-Magnate Kael Varrus</strong>, es un hombre consumido por la paranoia y el deseo de inmortalidad. Para mantener su poder y su vida, ha forjado un pacto oscuro.
-        </p>
-        <p>
-            Oculto a los ojos del Imperium, Varrus comercia con los <strong>Drukhari de la Cábala del Ojo Roto</strong>. A cambio de elixires de vida y Arcanotecnología Xenos, Varrus les entrega lo único que un Mundo Forja tiene en abundancia: maquinaria y almas. Decenas de miles de trabajadores desaparecen de los turnos de noche, sus muertes encubiertas como "accidentes industriales", para alimentar las arenas de Commorragh.
-        </p>
-        <p>
-            Esta traición ha puesto en marcha cuatro destinos que chocarán en una guerra total por el control del planeta.
-        </p>
-    </div>
-</section>
-<section class="mb-12 pt-8 border-t border-gray-700">
-    
-    <!-- FIN DEL ACTO I: Resultados Detallados -->
-    <section class="mb-12 pt-8 border-t border-gray-700">
-    <h2 class="section-title text-3xl mb-6">Prólogo y Resultados del Acto I</h2>
-    
-    <!-- Bloque de Contexto (Prólogo) -->
-    <div class="card p-6 mb-8 border-l-4 border-gray-500">
-        <h3 class="text-2xl font-bold text-red-400 mb-4">Crónicas del Crisol de Varrus: El Fuego de la Traición</h3>
-        <p class="text-lg text-gray-300">
-            El Crisol de Varrus ha estallado en una guerra total. El pacto secreto del Gobernador Kael Varrus con los Drukhari se ha hecho añicos, y la intervención de la Raven Guard y los World Eaters ha convertido el planeta en una zona de guerra de cuatro facciones. La verdad sobre la traición ha fracturado el planeta, alineando fuerzas leales contra renegados y xenos.
-        </p>
-    </div>
-
-    <!-- FIN DEL ACTO I: Resultados Detallados -->
-    <h3 class="text-2xl font-bold text-red-400 mb-6">FIN DEL ACTO I: El Alzamiento de las Cuatro Facciones</h3>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <!-- Resultado Batalla 1: Aguja Adamantina -->
-        <div class="card">
-            <div class="card-header">
-                <h4 class="text-xl font-bold text-white">Batalla 1: Asalto a la Aguja Adamantina</h4>
-                <p class="text-sm text-blue-300">Raven Guard vs. Astra Militarum</p>
-            </div>
-            <div class="card-body">
-                <p class="text-gray-300 space-y-3">
-                    <strong class="text-white">Narrativa:</strong> El asalto quirúrgico de la <strong>Raven Guard</strong> para decapitar el liderazgo traidor se encontró con una muralla de fe y blindaje. El <strong>Lord Commissar Rausch</strong>, siguiendo ciegamente la propaganda de Varrus, transformó la capital en un infierno urbano. Los Astartes tomaron la Aguja, pero la feroz y estratégica resistencia de Rausch proporcionó la cobertura necesaria para que el Gobernador Varrus escapara con tropas de élite, llevando consigo arcanotecnología vital.
-                </p>
-                <p class="text-gray-300">
-                    <strong class="text-white">Consecuencia:</strong> El Capitán Braken se ve obligado a asegurar la Aguja Adamantina y sus vastas instalaciones de manufactura, perdiendo la iniciativa de la caza. La Guardia Imperial mantiene su lealtad al Gobernador fugitivo, considerándolos a los Astartes como los verdaderos renegados.
-                </p>
-            </div>
+    <header class="main-header">
+        <div class="title-container">
+            <h1>EL CRISOL DE VARRUS</h1>
+            <p class="sub-readout">COGITATOR TERMINAL // SECTOR: HEPHAESTOS VII // CLEARANCE: VERMILION</p>
         </div>
+    </header>
 
-        <!-- Resultado Batada 2: La Cosecha Arruinada -->
-        <div class="card">
-            <div class="card-header">
-                <h4 class="text-xl font-bold text-white">Batalla 2: La Cosecha Interrumpida</h4>
-                <p class="text-sm text-red-300">World Eaters vs. Drukhari</p>
+    <nav class="nav-tabs">
+        <div class="nav-tab active" onclick="showSection('map')">Mapa Táctico</div>
+        <div class="nav-tab" onclick="showSection('lore')">Archivos de Cruzada</div>
+        <div class="nav-tab" onclick="showSection('factions')">Fuerzas de Combate</div>
+        <div class="nav-tab" onclick="showSection('rules')">Reglas</div>
+    </nav>    <!-- SECTION: MAP -->
+    <main id="section-map" class="content-container active">
+        <section class="panel">
+            <div class="panel-header">
+                <span>TACTICAL MAP: HEPHAESTOS VII</span>
+                <span>STATUS: CONTESTED</span>
             </div>
-            <div class="card-body">
-                <p class="text-gray-300 space-y-3">
-                    <strong class="text-white">Narrativa:</strong> En los Páramos de Ceniza, la 'cosecha' Drukhari se convirtió en un matadero sin arte. Los <strong>Bersérkers</strong> del Señor Agnus no permitieron que la Succubus Anyara Jynx disfrutara de su agonía. La Legión de Angron arrasó con la fuerza de recolección en una masacre imparable. Jynx se vio obligada a una retirada humillante, pero en el caos interceptó las comunicaciones de la rata traidora, Varrus.
-                </p>
-                <p class="text-gray-300">
-                    <strong class="text-white">Consecuencia:</strong> La Succubus Anyara Jynx jura una venganza personal y exquisita contra Varrus por la traición y la pérdida de su valiosa agonía. Los <strong>World Eaters</strong>, habiendo satisfecho temporalmente su sed con sangre xenos, perciben ahora el olor a victoria en la Aguja Adamantina y se dirigen hacia el combate más grande que el planeta puede ofrecer.
-                </p>
+            
+            <div id="map-container">
+                <div class="hex-grid">
+                    <!-- 1. Aguja Adamantina (Centro) -->
+                    <div class="hexagon hex-contested" style="top: 230px; left: 390px; width: 140px; height: 160px;" onclick="addLog('SECTOR: AGUJA ADAMANTINA - Estatus: Sitiada')">
+                        <span class="hex-label">AGUJA ADAMANTINA</span>
+                        <span class="hex-status">SITIADA</span>
+                    </div>
+
+                    <!-- 2. Túneles Gamma -->
+                    <div class="hexagon hex-sm" style="top: 100px; left: 280px;" onclick="addLog('SECTOR: TÚNELES GAMMA - Dominancia: Raven Guard')">
+                        <span class="hex-label">TÚNELES GAMMA</span>
+                        <span class="hex-status">DOM-RG</span>
+                    </div>
+
+                    <!-- 3. Páramos de Ceniza -->
+                    <div class="hexagon hex-we" style="top: 150px; left: 550px;" onclick="addLog('SECTOR: PÁRAMOS DE CENIZA - Dominancia: World Eaters')">
+                        <span class="hex-label">PÁRAMOS DE CENIZA</span>
+                        <span class="hex-status">DOM-WE</span>
+                    </div>
+
+                    <!-- 4. Fábrica de Blindados -->
+                    <div class="hexagon hex-ig" style="top: 380px; left: 500px;" onclick="addLog('SECTOR: FÁBRICA DE BLINDADOS - Dominancia: Astra Militarum')">
+                        <span class="hex-label">FÁBRICA DE BLINDADOS</span>
+                        <span class="hex-status">DOM-AM</span>
+                    </div>
+
+                    <!-- 5. 501º Cadian -->
+                    <div class="hexagon hex-ig" style="top: 350px; left: 220px;" onclick="addLog('SECTOR: 501º CADIAN - Zona de Aterrizaje')">
+                        <span class="hex-label">501º CADIAN</span>
+                        <span class="hex-status">DOM-AM</span>
+                    </div>
+
+                    <!-- 6. Sector Secundario A -->
+                    <div class="hexagon" style="top: 50px; left: 450px;" onclick="addLog('SECTOR: SEC-01 - Exploración en curso')">
+                        <span class="hex-label">SEC-01</span>
+                        <span class="hex-status">NEUTRAL</span>
+                    </div>
+
+                    <!-- 7. Sector Secundario B -->
+                    <div class="hexagon hex-dr" style="top: 300px; left: 700px;" onclick="addLog('SECTOR: SEC-02 - Presencia Xenos Detectada')">
+                        <span class="hex-label">SEC-02</span>
+                        <span class="hex-status">DOM-DR</span>
+                    </div>
+
+                    <!-- 8. Sector Secundario C -->
+                    <div class="hexagon" style="top: 450px; left: 350px;" onclick="addLog('SECTOR: SEC-03 - Ruinas Industriales')">
+                        <span class="hex-label">SEC-03</span>
+                        <span class="hex-status">DESIERTO</span>
+                    </div>
+                </div>
             </div>
+
+            <div id="vox-log">
+                <div class="log-entry"><span class="log-time">[INIT]</span> Cogitator boot sequence complete. Tracking Hephaestos VII sectors...</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- SECTION: LORE -->
+    <main id="section-lore" class="content-container">
+        <section class="panel">
+            <div class="panel-header">ARCHIVOS DE CRUZADA: EL MUNDO FORJA MANCHADO</div>
+            <div class="lore-text">
+                <p><strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja producen armas y blindados para una docena de cruzadas imperiales.</p>
+                <p>Pero guarda un secreto: está gobernado por el <strong>Gobernador Kael Varrus</strong>, quien ha forjado un pacto oscuro con los <strong>Drukhari</strong> a cambio de elixires de vida, entregando a cambio miles de trabajadores como esclavos.</p>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">REGISTROS: FIN DEL ACTO I</div>
+            <div class="factions-grid">
+                <div class="panel" style="margin-bottom:0;">
+                    <h4 style="color:var(--primary); margin-bottom:10px;">BATALLA 1: ASALTO A LA AGUJA</h4>
+                    <p style="font-size:0.85rem; color:var(--text-dim);">RAVEN GUARD VS ASTRA MILITARUM</p>
+                    <p style="font-size:0.9rem; margin-top:10px;">La Raven Guard tomó la Aguja, pero el Gobernador Varrus escapó. La Guardia mantiene su lealtad al traidor.</p>
+                </div>
+                <div class="panel" style="margin-bottom:0;">
+                    <h4 style="color:var(--primary); margin-bottom:10px;">BATALLA 2: COSECHA INTERRUMPIDA</h4>
+                    <p style="font-size:0.85rem; color:var(--text-dim);">WORLD EATERS VS DRUKHARI</p>
+                    <p style="font-size:0.9rem; margin-top:10px;">Los World Eaters masacraron a los Drukhari. La Succubus Jynx jura venganza contra Varrus.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-header">ACTO II: EL ASIEDO Y LA VENGANZA</div>
+            <div class="lore-text">
+                <p>El campo de batalla se ha fracturado. Dos conflictos determinarán quién dominará el Mundo Forja: el asedio a la capital por los World Eaters y la cacería de Varrus por parte de los Drukhari.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- SECTION: FACTIONS -->
+    <main id="section-factions" class="content-container">
+        <div class="factions-grid">
+            <a href="ob_sm.html" class="faction-card">
+                <div class="faction-icon"><img src="Imagenes/raven_guard.png" alt="RG"></div>
+                <div class="faction-info">
+                    <h4>SPACE MARINES</h4>
+                    <p>Fuerza: Raven Guard</p>
+                    <p>Estatus: Asegurando la Aguja</p>
+                </div>
+            </a>
+            <a href="ob_ig.html" class="faction-card">
+                <div class="faction-icon"><img src="Imagenes/imperial_guard.png" alt="IG"></div>
+                <div class="faction-info">
+                    <h4>ASTRA MILITARUM</h4>
+                    <p>Fuerza: 501º Cadian</p>
+                    <p>Estatus: Leales a Varrus</p>
+                </div>
+            </a>
+            <a href="ob_we.html" class="faction-card">
+                <div class="faction-icon"><img src="Imagenes/world_eaters.png" alt="WE"></div>
+                <div class="faction-info">
+                    <h4>WORLD EATERS</h4>
+                    <p>Fuerza: Hueste de Agnus</p>
+                    <p>Estatus: En Frenesí</p>
+                </div>
+            </a>
+            <a href="ob_dru.html" class="faction-card">
+                <div class="faction-icon"><img src="Imagenes/drukhari.png" alt="DR"></div>
+                <div class="faction-info">
+                    <h4>DRUKHARI</h4>
+                    <p>Fuerza: Cábala del Ojo Roto</p>
+                    <p>Estatus: Retirada Táctica</p>
+                </div>
+            </a>
         </div>
-        
-    </div>
-</section>
+    </main>
 
-<!-- INTRODUCCIÓN AL ACTO II (Ampliación) -->
-<section class="mb-12">
-    <h2 class="section-title text-3xl mb-6">INTRODUCCIÓN AL ACTO II: El Asedio y la Venganza</h2>
-    <p class="text-lg text-gray-300 mb-8">
-        El campo de batalla se ha fracturado, y la caza del Gobernador Varrus impulsa los nuevos enfrentamientos. Dos conflictos simultáneos, nacidos de la desesperación y la furia, determinarán quién dominará el Mundo Forja.
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-        <!-- Batalla A: Asedio de la Aguja -->
-        <div class="card">
-            <div class="card-header">
-                <h4 class="text-xl font-bold text-white">⚔️ Batalla A: Asedio de la Aguja - La Prueba de Acero</h4>
-                <p class="text-sm text-red-400">Enfrentamiento: Raven Guard vs. World Eaters</p>
-            </div>
-            <div class="card-body">
-                <p class="text-gray-300">
-                    El Capitán Braken y la <strong>Raven Guard</strong> están atrapados. Deben defender las fortificaciones de la capital y sus vitales arsenales contra la marea de Astartes traidores. El Señor Agnus ha olfateado la sangre de los 'Cuervos' y la promesa de un asalto glorioso. Los <strong>World Eaters</strong> avanzan sin estrategia, buscando tomar cada cráneo en la Aguja Adamantina. La <strong>Raven Guard</strong> debe resistir la embestida de la Legión y demostrar que la disciplina imperial es superior a la furia del Caos.
-                </p>
-            </div>
+    <!-- SECTION: RULES -->
+    <main id="section-rules" class="content-container">
+        <div class="factions-grid">
+            <a href="reglas_a.html" class="faction-card">
+                <div class="faction-icon"><i class="fas fa-scroll fa-2x" style="color:var(--primary);"></i></div>
+                <div class="faction-info">
+                    <h4>REGLAS ADICIONALES</h4>
+                    <p>Protocolos de Batalla y Estratagemas</p>
+                </div>
+            </a>
+            <a href="progresion.html" class="faction-card">
+                <div class="faction-icon"><i class="fas fa-trophy fa-2x" style="color:var(--primary);"></i></div>
+                <div class="faction-info">
+                    <h4>PROGRESIÓN</h4>
+                    <p>Agendas y Puntos de Victoria</p>
+                </div>
+            </a>
         </div>
+    </main>
 
-        <!-- Batalla B: Batalla por los Páramos -->
-        <div class="card">
-            <div class="card-header">
-                <h4 class="text-xl font-bold text-white">⚔️ Batalla B: Batalla por los Páramos - Caza Exquisita</h4>
-                <p class="text-sm text-red-400">Enfrentamiento: Astra Militarum vs. Drukhari</p>
-            </div>
-            <div class="card-body">
-                <p class="text-gray-300">
-                    El Gobernador Varrus y el <strong>Lord Commissar Rausch</strong>, en una alianza temporal e incómoda, se han atrincherado en búnkeres defensivos. Han reunido tropas de élite y vehículos blindados. La <strong>Succubus Anyara Jynx</strong> lanza a sus <strong>Drukhari</strong> en una cacería sádica. Su misión no es la matanza simple, sino la captura. La Guardia Imperial debe luchar por la vida de un hombre que los traicionó, mientras los Drukhari buscan hacer pagar al Gobernador con una agonía lenta y pública.
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-container').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-</main>
+            document.getElementById('section-' + sectionId).classList.add('active');
+            event.currentTarget.classList.add('active');
 
-<footer class="bg-gray-900 mt-12">
-<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-<p>&copy; 2025 Campaña "El Crisol de Varrus". Que la sangre y el acero decidan el destino.</p>
-</div>
-</footer>
+            addLog("Módulo activado: " + sectionId.toUpperCase());
+        }
 
+        function addLog(message) {
+            const log = document.getElementById('vox-log');
+            const time = new Date().toLocaleTimeString();
+            log.innerHTML += `<div class="log-entry"><span class="log-time">[${time}]</span> ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+    </script>
 </body>
-
 </html>
