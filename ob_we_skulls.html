@@ -1,433 +1,281 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diezmo de Cráneos - World Eaters</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>COGITATOR: SKULL_TITHE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="globals.css">
     <style>
-        /* Estilos Grimdark (Adaptados para WE) */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827;
-            color: #E5E7EB;
-        }
-
-        .header-bg {
-            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=DIEZMO+DE+CRÁNEOS');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
-            background-color: rgba(31, 41, 55, 0.7);
-        }
-
-        .grimdark-title {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #F9FAFB;
-            text-shadow:
-                0 0 5px #F9FAFB,
-                0 0 10px #F9FAFB,
-                0 0 20px #DC2626,
-                0 0 30px #DC2626;
-            animation: flicker 3s infinite alternate;
-        }
-
-        .card {
-            background-color: #1F2937;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .section-title {
-            font-weight: 900;
-            color: #F3F4F6;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid #DC2626;
-            padding-bottom: 0.5rem;
-        }
-
-        /* Estilos de Facción */
-        .faction-we { border-left: 4px solid #EF4444; } /* Rojo para World Eaters */
-        .text-red-400 { color: #f87171; } /* Color para nombres de WE */
+        .skulls-panel { border-left-color: var(--danger); }
         
-        /* Estilo para los botones +/- (Más grandes) */
-        .control-button {
-            transition: transform 0.1s, opacity 0.1s;
+        .unit-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .unit-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .skull-tracker-row {
             display: flex;
             align-items: center;
-            justify-content: center;
-            background-color: #374151; 
-            border: 1px solid #4B5563;
-            width: 2.5rem; /* 40px */
-            height: 2.5rem; /* 40px */
-            border-radius: 9999px; /* Círculo */
-            font-size: 1.5rem; /* 24px */
-            font-weight: 700;
-            flex-shrink: 0; /* Evita que el botón se encoja */
-        }
-        .control-button:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-        }
-        
-        /* --- ESTILO DEL NUEVO BOTÓN "COSECHAR" --- */
-        .harvest-button {
-            background-color: #991B1B; /* Rojo sangre WE */
-            color: #F9FAFB;
-            border: 1px solid #EF4444;
-            padding: 0.25rem 0.75rem; /* Pequeño y rectangular */
-            font-size: 0.75rem; /* Texto pequeño */
-            font-weight: 700;
-            text-transform: uppercase;
-            border-radius: 0.25rem;
-            transition: background-color 0.2s, transform 0.2s;
-            margin-left: 1rem; /* Espacio entre el nombre y el botón */
-            flex-shrink: 0;
-        }
-        .harvest-button:hover {
-            background-color: #B92E2E;
-            transform: scale(1.05);
+            gap: 1rem;
+            margin-bottom: 1rem;
         }
 
-        /* Estilo para el contenedor visual de calaveras */
-        .skull-tracker {
-            display: flex;
-            flex-wrap: wrap; /* Las calaveras pasarán a la siguiente línea si no caben */
-            gap: 4px; /* Espacio entre calaveras */
+        .skull-display {
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
             padding: 0.5rem;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 0.5rem;
-            min-height: 44px; /* Altura mínima para que el contenedor no colapse */
-            flex: 1; /* Ocupa el espacio restante */
+            border-radius: 4px;
+            flex: 1;
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
         }
-        
-        .skull-icon {
-            font-size: 1.5rem; /* Tamaño del emoji */
-            line-height: 1;
+
+        .control-btn {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            transition: 0.2s;
         }
-        .skull-legendary {
-            color: #FBBF24; /* Dorado/Amarillo */
+
+        .control-btn:hover {
+            border-color: var(--danger);
+            background: var(--primary-glow);
         }
-        .skull-normal {
-            color: #9CA3AF; /* Gris */
+
+        .harvest-btn {
+            background: none;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.3s;
         }
-        
-        .stat-value {
-            font-size: 1.8rem; /* Tamaño del número */
-            font-weight: 700;
-            min-width: 2rem; /* Espacio para el número (ej. "8") */
+
+        .harvest-btn:hover {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 0 10px var(--danger);
+        }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--danger);
+            width: 30px;
             text-align: center;
+        }
+
+        .skull-icon { font-size: 1.2rem; }
+        .skull-legendary { color: var(--secondary); text-shadow: 0 0 5px var(--secondary); }
+        .skull-normal { color: var(--text-dim); }
+
+        #save-changes-button {
+            padding: 1rem 2rem;
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+            color: white;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.3s;
+        }
+
+        #save-changes-button:hover:not(:disabled) {
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #save-changes-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
         }
     </style>
 </head>
-
 <body class="antialiased">
+    <div class="hud-vignette"></div>
 
-    <!-- BLOQUE JAVASCRIPT DINÁMICO (Conexión a Google Sheets "WE") -->
+    <header class="main-header">
+        <div class="title-container">
+            <h1>DIEZMO DE CRÁNEOS</h1>
+            <p class="sub-readout">COGITATOR MODULE: SKULL_COLLECTION // LEGION: XII - WORLD EATERS</p>
+        </div>
+        <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;">
+            <a href="index.html" class="nav-tab">← VOLVER AL TABLERO</a>
+            <a href="ob_we.html" class="nav-tab" style="color: var(--danger); border-color: var(--danger);">ORDEN DE BATALLA →</a>
+        </div>
+    </header>
+
+    <main style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+        <section class="panel skulls-panel">
+            <div class="panel-header">
+                <span>REGISTRO_DIEZMO: WE_BLOOD_FOR_KHORNE</span>
+                <button id="save-changes-button" onclick="sendUpdates()" disabled>Guardar Diezmo (0)</button>
+            </div>
+            
+            <p id="loading-message" class="sub-readout" style="margin-bottom: 2rem; color: var(--danger);">[SISTEMA]: SINCRONIZANDO CON EL TRONO DE CRÁNEOS...</p>
+
+            <div id="skulls-list-container">
+                <!-- Injected by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim); border-top: 1px solid var(--border);">
+        <p>&copy; 2025 Campaña "El Crisol de Varrus". ¡SANGRE PARA EL DIOS DE LA SANGRE!</p>
+    </footer>
+
     <script>
-        // ** URL DE TU GOOGLE APPS SCRIPT (Hoja WE) **
         const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxmfS3fFZOiNX2edYerxkVngH2Ne3SIe2Jkj2zhJdUTPklffL_9a_k9HgioYyDNOY6L/exec"; 
-        
-        // ** COLA GLOBAL DE CAMBIOS PENDIENTES **
         let updatesQueue = {}; 
-        let initialData = []; // Almacenará los datos originales
+        let initialData = [];
 
-        /**
-         * Dibuja los iconos de calaveras en un contenedor.
-         */
-        function renderSkulls(containerElement, count, isLegendary) {
-            if (!containerElement) return;
-            containerElement.innerHTML = ''; // Limpiar el contenedor
-            
-            const skullIcon = '💀';
-            const skullClass = isLegendary ? 'skull-legendary' : 'skull-normal';
-            
+        function renderSkulls(container, count, isLegendary) {
+            if (!container) return;
+            container.innerHTML = '';
+            const icon = '💀';
+            const cls = isLegendary ? 'skull-legendary' : 'skull-normal';
             for (let i = 0; i < count; i++) {
-                const skullSpan = document.createElement('span');
-                skullSpan.textContent = skullIcon;
-                skullSpan.className = `skull-icon ${skullClass}`;
-                containerElement.appendChild(skullSpan);
+                const s = document.createElement('span');
+                s.textContent = icon;
+                s.className = `skull-icon ${cls}`;
+                container.appendChild(s);
             }
         }
 
-        /**
-         * Lógica central para manejar la cola de cambios.
-         */
-        function handleQueueUpdate(nombreUnidad, campo, newValue, initialValue) {
+        function handleQueueUpdate(nombreUnidad, campo, nv, iv) {
             const saveButton = document.getElementById('save-changes-button');
             const key = `${nombreUnidad}_${campo}`;
-
             if (!updatesQueue[key]) {
-                updatesQueue[key] = {
-                    nombreUnidad: nombreUnidad,
-                    campo: campo,
-                    valorInicial: initialValue,
-                    valorFinal: newValue
-                };
+                updatesQueue[key] = { nombreUnidad, campo, valorInicial: iv, valorFinal: nv };
             } else {
-                updatesQueue[key].valorFinal = newValue;
+                updatesQueue[key].valorFinal = nv;
             }
-
-            if (updatesQueue[key].valorFinal === updatesQueue[key].valorInicial) {
-                delete updatesQueue[key];
-            }
-
-            const pendingCount = Object.keys(updatesQueue).length;
-            saveButton.disabled = pendingCount === 0;
-            saveButton.textContent = `Guardar Diezmo (${pendingCount} Pendientes)`;
+            if (updatesQueue[key].valorFinal === updatesQueue[key].valorInicial) delete updatesQueue[key];
+            const pc = Object.keys(updatesQueue).length;
+            saveButton.disabled = pc === 0;
+            saveButton.textContent = `Guardar Diezmo (${pc})`;
         }
 
-        /**
-         * NUEVA FUNCIÓN: Pone a CERO los contadores de una unidad.
-         */
         function harvestUnit(nombreUnidad) {
-            const safeName = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-
-            // 1. Actualizar Skulls (Normales)
-            const skullsNumEl = document.getElementById(`skulls-number-${safeName}`);
-            const skullsVisEl = document.getElementById(`skulls-visual-${safeName}`);
-            const initialSkulls = parseInt(skullsNumEl.dataset.initialValue);
-            
-            skullsNumEl.textContent = '0';
-            renderSkulls(skullsVisEl, 0, false);
-            handleQueueUpdate(nombreUnidad, 'skulls', 0, initialSkulls);
-            
-            // 2. Actualizar Legendary Skulls (Dorados)
-            const legSkullsNumEl = document.getElementById(`legendary_skulls-number-${safeName}`);
-            const legSkullsVisEl = document.getElementById(`legendary_skulls-visual-${safeName}`);
-            const initialLegSkulls = parseInt(legSkullsNumEl.dataset.initialValue);
-
-            legSkullsNumEl.textContent = '0';
-            renderSkulls(legSkullsVisEl, 0, true);
-            handleQueueUpdate(nombreUnidad, 'legendary_skulls', 0, initialLegSkulls);
+            const sn = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            ['skulls', 'legendary_skulls'].forEach(f => {
+                const numEl = document.getElementById(`${f}-number-${sn}`);
+                const visEl = document.getElementById(`${f}-visual-${sn}`);
+                const iv = parseInt(numEl.dataset.initialValue);
+                numEl.textContent = '0';
+                renderSkulls(visEl, 0, f === 'legendary_skulls');
+                handleQueueUpdate(nombreUnidad, f, 0, iv);
+            });
         }
 
-        // --- Cargar Datos Iniciales ---
         async function fetchAndRenderList() {
-            const loadingElement = document.getElementById('loading-message');
-            const listContainer = document.getElementById('skulls-list-container');
-            const saveButton = document.getElementById('save-changes-button');
-            
-            loadingElement.textContent = 'Contando el diezmo para Khorne...';
-            listContainer.innerHTML = ''; 
-            updatesQueue = {}; 
-
+            const lm = document.getElementById('loading-message');
+            const lc = document.getElementById('skulls-list-container');
+            const sb = document.getElementById('save-changes-button');
+            updatesQueue = {};
             try {
                 const response = await fetch(APP_SCRIPT_URL);
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Fallo de red (${response.status}). Revisa Apps Script o permisos.`);
-                }
-                
                 initialData = await response.json();
-                
                 let html = '';
-                
-                if (initialData.length === 0) {
-                    loadingElement.textContent = 'Hoja WE vacía. Agrega unidades en tu Google Sheet.';
-                    return;
-                }
-
                 initialData.forEach(unit => {
-                    const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                    
-                    // HTML actualizado con el botón "Cosechar"
+                    const sn = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
                     html += `
-                        <div class="card p-4 faction-we mb-4" data-unit-name="${unit.nombre}">
-                            <!-- Encabezado de la Tarjeta (Nombre, Tipo, Puntos) -->
-                            <div class="flex justify-between items-center mb-4 pb-2 border-b border-gray-700">
-                                <!-- Nombre y Tipo -->
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center">
-                                        <h4 class="text-xl font-bold text-red-400 truncate">${unit.nombre}</h4>
-                                        <!-- Botón Cosechar (NUEVO) -->
-                                        <button onclick="harvestUnit('${unit.nombre}')" class="harvest-button">
-                                            Cosechar
-                                        </button>
-                                    </div>
-                                    <p class="text-sm text-gray-400">${unit.tipo}</p>
+                        <div class="unit-card">
+                            <div class="unit-card-header">
+                                <div>
+                                    <h4 style="color: var(--danger); font-family: 'Orbitron', sans-serif;">${unit.nombre}</h4>
+                                    <p class="sub-readout" style="font-size: 0.7rem;">${unit.tipo}</p>
                                 </div>
-                                
-                                <!-- Puntos -->
-                                <div class="text-right flex-shrink-0 ml-4">
-                                    <span class="text-xs text-gray-500">Puntos</span>
-                                    <p class="text-lg font-bold text-yellow-400">${unit.puntosBase}</p>
-                                </div>
+                                <button onclick="harvestUnit('${unit.nombre}')" class="harvest-btn">COSECHAR</button>
                             </div>
                             
-                            <!-- Rastreador: Cráneos (Skulls) -->
-                            <div class="mb-3">
-                                <label class="text-sm font-bold text-gray-300">CRÁNEOS (SKULLS)</label>
-                                <div class="flex items-center space-x-4 mt-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'skulls', 'decremento', false)" class="control-button text-red-400">-</button>
-                                    <span id="skulls-number-${safeName}" data-initial-value="${unit.skulls}" class="stat-value">${unit.skulls}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'skulls', 'incremento', false)" class="control-button text-green-400">+</button>
-                                    <div id="skulls-visual-${safeName}" class="skull-tracker"></div>
-                                </div>
+                            <div class="skull-tracker-row">
+                                <span class="sub-readout" style="width: 100px;">CRÁNEOS</span>
+                                <button onclick="addToQueue('${unit.nombre}', 'skulls', 'decremento', false)" class="control-btn">-</button>
+                                <span id="skulls-number-${sn}" data-initial-value="${unit.skulls}" class="stat-val">${unit.skulls}</span>
+                                <button onclick="addToQueue('${unit.nombre}', 'skulls', 'incremento', false)" class="control-btn">+</button>
+                                <div id="skulls-visual-${sn}" class="skull-display"></div>
                             </div>
-                            
-                            <!-- Rastreador: Cráneos Legendarios (Legendary Skulls) -->
-                            <div class="mb-1">
-                                <label class="text-sm font-bold text-yellow-400">CRÁNEOS LEGENDARIOS</label>
-                                <div class="flex items-center space-x-4 mt-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'legendary_skulls', 'decremento', true)" class="control-button text-red-400">-</button>
-                                    <span id="legendary_skulls-number-${safeName}" data-initial-value="${unit.legendary_skulls}" class="stat-value">${unit.legendary_skulls}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'legendary_skulls', 'incremento', true)" class="control-button text-green-400">+</button>
-                                    <div id="legendary_skulls-visual-${safeName}" class="skull-tracker"></div>
-                                </div>
+
+                            <div class="skull-tracker-row">
+                                <span class="sub-readout" style="width: 100px; color: var(--secondary);">LEGENDARIOS</span>
+                                <button onclick="addToQueue('${unit.nombre}', 'legendary_skulls', 'decremento', true)" class="control-btn">-</button>
+                                <span id="legendary_skulls-number-${sn}" data-initial-value="${unit.legendary_skulls}" class="stat-val">${unit.legendary_skulls}</span>
+                                <button onclick="addToQueue('${unit.nombre}', 'legendary_skulls', 'incremento', true)" class="control-btn">+</button>
+                                <div id="legendary_skulls-visual-${sn}" class="skull-display"></div>
                             </div>
                         </div>
                     `;
                 });
-                
-                listContainer.innerHTML = html;
-                loadingElement.textContent = 'Diezmo de Cráneos cargado.';
-                
-                // PASO 2: Renderizar las calaveras visuales
+                lc.innerHTML = html;
+                lm.style.display = 'none';
                 initialData.forEach(unit => {
-                    const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-                    renderSkulls(document.getElementById(`skulls-visual-${safeName}`), unit.skulls, false);
-                    renderSkulls(document.getElementById(`legendary_skulls-visual-${safeName}`), unit.legendary_skulls, true);
+                    const sn = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+                    renderSkulls(document.getElementById(`skulls-visual-${sn}`), unit.skulls, false);
+                    renderSkulls(document.getElementById(`legendary_skulls-visual-${sn}`), unit.legendary_skulls, true);
                 });
-
-                saveButton.disabled = true;
-                saveButton.textContent = 'Guardar Diezmo (0 Pendientes)';
-
+                sb.disabled = true;
             } catch (error) {
-                console.error('Error fetching data:', error);
-                loadingElement.textContent = `ERROR AL CARGAR DATOS: ${error.message}.`;
+                lm.textContent = `[ERROR]: ${error.message}`;
             }
         }
 
-        // --- Lógica de la Cola de Cambios (Botones +/-) ---
         function addToQueue(nombreUnidad, campo, accion, isLegendary) {
-            const safeName = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
-            const numberElement = document.getElementById(`${campo}-number-${safeName}`);
-            const visualElement = document.getElementById(`${campo}-visual-${safeName}`);
-            
-            let currentValue = parseInt(numberElement.textContent);
-            let newValue = (accion === 'incremento') ? currentValue + 1 : Math.max(0, currentValue - 1);
-            
-            // 1. Actualizar UI
-            numberElement.textContent = newValue;
-            renderSkulls(visualElement, newValue, isLegendary);
-
-            // 2. Update Queue
-            handleQueueUpdate(nombreUnidad, campo, newValue, parseInt(numberElement.dataset.initialValue));
+            const sn = nombreUnidad.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
+            const numEl = document.getElementById(`${campo}-number-${sn}`);
+            const visEl = document.getElementById(`${campo}-visual-${sn}`);
+            let nv = (accion === 'incremento') ? parseInt(numEl.textContent) + 1 : Math.max(0, parseInt(numEl.textContent) - 1);
+            numEl.textContent = nv;
+            renderSkulls(visEl, nv, isLegendary);
+            handleQueueUpdate(nombreUnidad, campo, nv, parseInt(numEl.dataset.initialValue));
         }
 
-        // --- Enviar el POST al Apps Script (Guardado por Lote) ---
         async function sendUpdates() {
-            const saveButton = document.getElementById('save-changes-button');
-            saveButton.disabled = true;
-            saveButton.textContent = 'Guardando...';
-
-            const changesArray = Object.values(updatesQueue).map(item => ({
-                nombreUnidad: item.nombreUnidad,
-                campo: item.campo,
-                valor: item.valorFinal
-            }));
-            
-            if (changesArray.length === 0) {
-                saveButton.textContent = 'Guardar Diezmo (0 Pendientes)';
-                return;
-            }
-
+            const sb = document.getElementById('save-changes-button');
+            sb.disabled = true;
+            sb.textContent = 'TRANSMITIENDO...';
+            const changes = Object.values(updatesQueue).map(i => ({ nombreUnidad: i.nombreUnidad, campo: i.campo, valor: i.valorFinal }));
             try {
                 const response = await fetch(APP_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'cors',
                     headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify({
-                        action: 'UPDATE_BATCH', // Usamos la acción de lote
-                        changes: changesArray
-                    })
+                    body: JSON.stringify({ action: 'UPDATE_BATCH', changes })
                 });
-                
                 const result = await response.json();
-
                 if (result.success) {
-                    alert(`¡Guardado exitoso! ${result.unidadesActualizadas} campos modificados.`);
-                    fetchAndRenderList(); // Recargar la lista
-                } else {
-                    alert(`Error al guardar en el servidor: ${result.message}`);
-                    saveButton.textContent = 'ERROR DE GUARDADO';
-                }
-
+                    alert('[DIEZMO REGISTRADO]: KHORNE ESTÁ COMPLACIDO.');
+                    fetchAndRenderList();
+                } else throw new Error(result.message);
             } catch (error) {
-                console.error('Error al enviar actualizaciones:', error);
-                alert('Error de conexión. Revisa la Consola y el Apps Script.');
-                saveButton.textContent = 'FALLÓ EL ENVÍO';
+                alert('[ERROR]: FALLO EN LA TRANSMISIÓN.');
+                sb.disabled = false;
             }
         }
 
         window.onload = fetchAndRenderList;
     </script>
-    
-    <!-- HEADER -->
-    <header class="header-bg relative">
-        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-        <div class="relative max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="grimdark-title text-3xl sm:text-4xl">
-                🩸 DIEZMO DE CRÁNEOS (SKULL TITHE)
-            </h1>
-            <p class="mt-4 text-lg text-gray-300">
-                World Eaters - Hoja de Seguimiento de Cráneos
-            </p>
-            <div class="mt-4 flex flex-col sm:flex-row justify-center items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                <a href="index.html" class="inline-block text-sm text-red-400 hover:text-red-300 font-bold border border-red-400 px-4 py-2 rounded">
-                    ← Volver al Tablero de Campaña
-                </a>
-                <a href="ob_we.html" class="inline-block text-sm text-white bg-red-700 hover:bg-red-600 font-bold px-4 py-2 rounded">
-                    Ir al Orden de Batalla (XP/PC) →
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-
-        <!-- CONTENEDOR PRINCIPAL DE LA LISTA DINÁMICA -->
-        <section class="faction-we">
-            <h3 class="text-3xl font-bold text-red-400 mb-4 section-title">Diezmo de Unidades (Hoja: WE)</h3>
-            <p id="loading-message" class="text-lg text-red-400 mb-6">Cargando datos...</p>
-            
-            <!-- Contenedor para las Tarjetas de Unidad -->
-            <div id="skulls-list-container" class="space-y-4">
-                <!-- Las tarjetas de unidad se inyectarán aquí por JavaScript -->
-            </div>
-            
-        </section>
-
-        <!-- Botón de Guardar Cambios (Guardado por Lote) -->
-        <div class="mt-8 text-center">
-            <button 
-                id="save-changes-button"
-                onclick="sendUpdates()"
-                disabled
-                class="px-8 py-3 text-lg font-bold uppercase rounded-lg transition duration-200 
-                       bg-red-700 text-white hover:bg-red-600 
-                       disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
-                Guardar Diezmo (0 Pendientes)
-            </button>
-        </div>
-        <!-- Fin del Botón de Guardar Cambios -->
-
-    </main>
-
-    <footer class="bg-gray-900 mt-12">
-        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-500">
-            <p>&copy; 2025 Campaña "El Crisol de Varrus". ¡Sangre para el Dios de la Sangre!</p>
-        </div>
-    </footer>
-
 </body>
-
 </html>

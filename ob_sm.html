@@ -1,96 +1,167 @@
-<!DOCTYPE html>
-<html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Cruzada - Space Marines (Dinámico)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>COGITATOR: OOB_SPACE_MARINES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="globals.css">
     <style>
-        /* Bloque de Estilos CSS Grimdark */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #111827; /* Gris oscuro */
-            color: #E5E7EB; /* Gris claro */
+        .faction-sm { border-left-color: var(--info); }
+        
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
-
-        .header-bg {
-            background-image: url('https://placehold.co/1200x400/1f2937/4b5563?text=ARCHIVOS+DE+CRUZADA');
-            background-size: cover;
-            background-position: center;
-            background-blend-mode: multiply;
-            background-color: rgba(31, 41, 55, 0.7);
-        }
-
-        .grimdark-title {
-            font-family: 'Inter', sans-serif;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #F9FAFB;
-            text-shadow: 0 0 5px #F9FAFB, 0 0 10px #F9FAFB, 0 0 20px #DC2626, 0 0 30px #DC2626;
-            animation: flicker 3s infinite alternate;
-        }
-
-        .card {
-            background-color: #1F2937;
-            border: 1px solid #374151;
-            border-radius: 0.5rem;
-            overflow: hidden;
-        }
-
-        .faction-sm { border-left: 4px solid #3B82F6; } /* Azul para Space Marines */
 
         .stat-box {
-            background-color: #374151;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            font-weight: 700;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border);
+            padding: 1rem;
             text-align: center;
         }
-        @media (min-width: 640px) { .stat-box { padding: 0.5rem 1rem; } }
 
-        .stat-box span {
+        .stat-box .label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
             display: block;
-            font-size: 1.25rem;
-            line-height: 1;
-            color: #F9FAFB;
         }
-        @media (min-width: 640px) { .stat-box span { font-size: 1.5rem; } }
 
-        /* Estilos de la tabla de datos dinámicos */
-        #units-list-table-body td { vertical-align: middle; }
-        .text-blue-400 { color: #60A5FA; }
-        
-        /* Botones de control responsivos */
+        .stat-box .value {
+            font-size: 2rem;
+            color: var(--info);
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 0.8rem;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        th {
+            background: var(--primary-glow);
+            color: var(--primary);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+        }
+
+        .unit-name {
+            text-align: left;
+            color: var(--info);
+            font-weight: bold;
+        }
+
         .control-button {
-            transition: transform 0.1s, opacity 0.1s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #374151; 
-            border: 1px solid #4B5563;
-            /* Tamaño base para móvil (más fácil de tocar) */
-            width: 32px; height: 32px; font-size: 1.25rem; 
-        }
-        @media (min-width: 768px) { 
-            /* Tamaño ligeramente menor para desktop si se prefiere */
-            .control-button { width: 28px; height: 28px; font-size: 1.1rem; } 
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .control-button:hover { transform: scale(1.05); opacity: 0.9; }
+        .control-button:hover {
+            border-color: var(--info);
+            background: var(--primary-glow);
+        }
+
+        #save-changes-button {
+            padding: 1rem 2rem;
+            background: var(--primary-dim);
+            border: 1px solid var(--primary);
+            color: white;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Orbitron', sans-serif;
+            transition: 0.3s;
+        }
+
+        #save-changes-button:hover:not(:disabled) {
+            background: var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        #save-changes-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            filter: grayscale(1);
+        }
     </style>
 </head>
+<body class="antialiased">
+    <div class="hud-vignette"></div>
 
-<body class="antialiased bg-gray-900">
+    <header class="main-header">
+        <div class="title-container">
+            <h1>OOB: SPACE MARINES</h1>
+            <p class="sub-readout">COGITATOR MODULE: CRUSADE_OOB // FORCE: LA GARRA SOMBRÍA</p>
+        </div>
+        <div style="margin-top: 1rem; display: flex; justify-content: center; gap: 1rem;">
+            <a href="index.html" class="nav-tab">← VOLVER AL TABLERO</a>
+            <a href="oath_tracker.html" class="nav-tab">📜 OATHSWORN TRACKER</a>
+        </div>
+    </header>
 
-    <!-- BLOQUE JAVASCRIPT DINÁMICO (Conexión a Google Sheets) -->
+    <main style="padding: 2rem; max-width: 1400px; margin: 0 auto;">
+        <section class="panel faction-sm">
+            <div class="panel-header">
+                <span>REGISTRO ACTIVO (SM)</span>
+                <button id="save-changes-button" onclick="sendUpdates()" disabled>Guardar Cambios (0)</button>
+            </div>
+
+            <p id="loading-message" style="color: var(--danger); margin-bottom: 1rem;">[SISTEMA]: ESTABLECIENDO VÍNCULO CON LA HOJA DE DATOS...</p>
+
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <span class="label">Puntos Cruzada</span>
+                    <span id="total-pc" class="value">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">Experiencia Total</span>
+                    <span id="total-xp" class="value">0</span>
+                </div>
+                <div class="stat-box">
+                    <span class="label">Bajas Totales</span>
+                    <span id="total-destruidos" class="value">0</span>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Unidad</th>
+                            <th>Pts</th>
+                            <th>Rango</th>
+                            <th>XP</th>
+                            <th>Bajas</th>
+                            <th>PC</th>
+                        </tr>
+                    </thead>
+                    <tbody id="units-list-table-body">
+                        <!-- Injected by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-dim); border-top: 1px solid var(--border);">
+        <p>&copy; 2025 Campaña "El Crisol de Varrus".</p>
+    </footer>
+
     <script>
-        // ** URL DE TU GOOGLE APPS SCRIPT (Hoja SM) **
-        // ¡REEMPLAZA ESTA URL CON LA URL DE TU DESPLIEGUE FINAL!
         const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzdHI6TjNys2Jvw_xhzySm2G2E73PGi53jayN-NmkQbpk4FPVCzPoCV122KG-0w7RNZ/exec"; 
-        
         let updatesQueue = {}; 
 
         async function fetchAndRenderList() {
@@ -98,7 +169,7 @@
             const listContainer = document.getElementById('units-list-table-body');
             const saveButton = document.getElementById('save-changes-button');
             
-            loadingElement.textContent = 'Cargando datos del Omnissiah...';
+            loadingElement.textContent = '[SISTEMA]: SINCRONIZANDO DATOS DEL OMNISSIAH...';
             listContainer.innerHTML = ''; 
             updatesQueue = {}; 
 
@@ -113,7 +184,7 @@
                 let html = '';
                 
                 if (data.length === 0) {
-                    loadingElement.textContent = 'Hoja SM vacía.';
+                    loadingElement.textContent = '[ERROR]: DATOS NO ENCONTRADOS.';
                     return;
                 }
 
@@ -123,42 +194,42 @@
                     totalDestruidos += parseInt(unit.destruidos) || 0;
                     
                     const getRank = (xp) => {
-                        if (xp >= 71) return 'Leyenda';
-                        if (xp >= 51) return 'Heroe';
-                        if (xp >= 31) return 'Veterano';
-                        if (xp >= 6) return 'Combatiente';
-                        return 'Novato';
+                        if (xp >= 71) return 'LEYENDA';
+                        if (xp >= 51) return 'HEROE';
+                        if (xp >= 31) return 'VETERANO';
+                        if (xp >= 6) return 'COMBATIENTE';
+                        return 'NOVATO';
                     };
                     const rank = getRank(unit.xp);
                     const safeName = unit.nombre.replace(/\s/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
 
                     html += `
-                        <tr class="bg-gray-800 border-b border-gray-700 hover:bg-gray-700" data-unit-name="${unit.nombre}">
-                            <th scope="row" class="px-2 sm:px-3 py-2 font-medium whitespace-nowrap text-white text-left">
-                                <strong class="text-blue-400 block sm:inline">${unit.nombre}</strong>
-                                <span class="text-xs text-gray-500 block sm:inline sm:ml-1">${unit.tipo}</span>
-                            </th>
-                            <td class="px-2 sm:px-3 py-2 text-center text-yellow-400 font-bold hidden sm:table-cell">${unit.puntosBase}</td>
-                            <td class="px-2 sm:px-3 py-2 text-center text-xs sm:text-sm">${rank}</td>
-                            <td class="px-2 sm:px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
-                                    <span id="xp-${safeName}" data-initial-value="${unit.xp}" class="w-6 sm:w-8 text-center">${unit.xp}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
+                        <tr data-unit-name="${unit.nombre}">
+                            <td class="unit-name">
+                                <div>${unit.nombre}</div>
+                                <div style="font-size: 0.7rem; color: var(--text-dim);">${unit.tipo}</div>
+                            </td>
+                            <td style="color: var(--secondary); font-weight: bold;">${unit.puntosBase}</td>
+                            <td>${rank}</td>
+                            <td>
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'decremento')" class="control-button">-</button>
+                                    <span id="xp-${safeName}" data-initial-value="${unit.xp}" style="width: 20px;">${unit.xp}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'xp', 'incremento')" class="control-button">+</button>
                                 </div>
                             </td>
-                            <td class="px-2 sm:px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
-                                    <span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}" class="w-6 sm:w-8 text-center">${unit.destruidos}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
+                            <td>
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'decremento')" class="control-button">-</button>
+                                    <span id="destruidos-${safeName}" data-initial-value="${unit.destruidos}" style="width: 20px;">${unit.destruidos}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'destruidos', 'incremento')" class="control-button">+</button>
                                 </div>
                             </td>
-                            <td class="px-2 sm:px-3 py-2 text-center">
-                                <div class="flex items-center justify-center space-x-1 sm:space-x-2">
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento')" class="control-button rounded-full text-red-500 hover:text-red-400">-</button>
-                                    <span id="pc-${safeName}" data-initial-value="${unit.pc}" class="w-6 sm:w-8 text-center">${unit.pc}</span>
-                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento')" class="control-button rounded-full text-green-500 hover:text-green-400">+</button>
+                            <td>
+                                <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'decremento')" class="control-button">-</button>
+                                    <span id="pc-${safeName}" data-initial-value="${unit.pc}" style="width: 20px;">${unit.pc}</span>
+                                    <button onclick="addToQueue('${unit.nombre}', 'pc', 'incremento')" class="control-button">+</button>
                                 </div>
                             </td>
                         </tr>
@@ -166,7 +237,7 @@
                 });
                 
                 listContainer.innerHTML = html;
-                loadingElement.style.display = 'none'; // Ocultar loading en lugar de cambiar texto
+                loadingElement.style.display = 'none'; 
                 
                 document.getElementById('total-pc').textContent = totalPC;
                 document.getElementById('total-xp').textContent = totalXP;
@@ -177,7 +248,7 @@
 
             } catch (error) {
                 console.error('Error fetching data:', error);
-                loadingElement.textContent = `ERROR: ${error.message}`;
+                loadingElement.textContent = `[CRITICAL ERROR]: ${error.message}`;
             }
         }
 
@@ -214,7 +285,7 @@
         async function sendUpdates() {
             const saveButton = document.getElementById('save-changes-button');
             saveButton.disabled = true;
-            saveButton.textContent = 'Guardando...';
+            saveButton.textContent = 'TRANSMITIENDO...';
 
             const changesArray = Object.values(updatesQueue).map(item => ({
                 nombreUnidad: item.nombreUnidad,
@@ -231,106 +302,16 @@
                     headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(changesArray)
                 });
-                alert(`¡Guardado exitoso!`);
+                alert(`[VÍNCULO ESTABLECIDO]: CAMBIOS REGISTRADOS CORRECTAMENTE.`);
                 fetchAndRenderList(); 
             } catch (error) {
-                alert('Error de conexión. Revisa la Consola.');
-                saveButton.textContent = 'FALLÓ EL ENVÍO';
+                alert('[ERROR DE TRANSMISIÓN]: VERIFIQUE CONEXIÓN CON EL COGITATOR.');
+                saveButton.textContent = 'FALLO TRANSMISIÓN';
+                saveButton.disabled = false;
             }
         }
 
         window.onload = fetchAndRenderList;
     </script>
-    
-    <!-- HEADER -->
-    <header class="header-bg relative">
-        <div class="absolute inset-0 bg-gray-900 opacity-60"></div>
-        <div class="relative max-w-7xl mx-auto py-8 md:py-12 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="grimdark-title text-2xl sm:text-4xl">
-                🛡️ ARCHIVOS DE CRUZADA: SPACE MARINES
-            </h1>
-            <p class="mt-2 text-sm sm:text-lg text-gray-300">
-                La Garra Sombría, Batalla por Hephaestos VII.
-            </p>
-            
-            <!-- BOTONES DE NAVEGACIÓN SUPERIOR -->
-            <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
-                <a href="index.html" class="inline-block text-xs sm:text-sm text-gray-300 hover:text-white font-bold border border-gray-500 px-4 py-2 rounded transition-colors hover:border-gray-300">
-                    ← Volver al Menú
-                </a>
-                <!-- NUEVO BOTÓN OATHSWORN TRACKER -->
-                <a href="oath_tracker.html" class="inline-block text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-bold border border-blue-500 px-4 py-2 rounded transition-colors hover:border-blue-300 flex items-center justify-center">
-                    <span>📜</span> <span class="ml-2">Ver Oathsworn Campaign</span>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto p-2 sm:p-4 md:p-6 lg:p-8">
-
-        <!-- CONTENEDOR PRINCIPAL DE LA LISTA DINÁMICA -->
-        <section id="space-marines-list" class="card p-4 sm:p-6 faction-sm">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
-                <h3 class="text-2xl sm:text-3xl font-bold text-blue-300">Registro Activo (SM)</h3>
-                <!-- Botón de Guardar Cambios (Móvil: visible arriba también) -->
-                <button 
-                    id="save-changes-button"
-                    onclick="sendUpdates()"
-                    disabled
-                    class="mt-3 md:mt-0 w-full md:w-auto px-6 py-2 text-sm sm:text-base font-bold uppercase rounded transition duration-200 
-                           bg-red-700 text-white hover:bg-red-600 
-                           disabled:bg-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed">
-                    Guardar Cambios (0)
-                </button>
-            </div>
-            
-            <p id="loading-message" class="text-lg text-red-400 mb-6 text-center md:text-left">Cargando datos...</p>
-            
-            <!-- Resumen de Totales (DINÁMICOS & RESPONSIVOS) -->
-            <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-                <div class="stat-box">
-                    <span class="text-xs sm:text-sm uppercase text-gray-400">Puntos Cruzada</span>
-                    <span id="total-pc" class="text-xl sm:text-3xl">0</span>
-                </div>
-                <div class="stat-box">
-                    <span class="text-xs sm:text-sm uppercase text-gray-400">Experiencia Total</span>
-                    <span id="total-xp" class="text-xl sm:text-3xl">0</span>
-                </div>
-                <div class="stat-box">
-                    <span class="text-xs sm:text-sm uppercase text-gray-400">Bajas Totales</span>
-                    <span id="total-destruidos" class="text-xl sm:text-3xl">0</span>
-                </div>
-            </div>
-            
-            <h4 class="text-lg sm:text-xl section-title mb-4">Registro Detallado de Unidades</h4>
-
-            <!-- Estructura de Tabla Dinámica (Desplazable en móvil) -->
-            <div class="overflow-x-auto -mx-4 sm:mx-0">
-                <div class="inline-block min-w-full align-middle">
-                    <table class="min-w-full text-sm text-left text-gray-300">
-                        <thead class="text-xs uppercase bg-gray-700 text-gray-400">
-                            <tr>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-left">Unidad</th>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-center hidden sm:table-cell">Pts</th>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">Rango</th>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">XP</th>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">Bajas</th>
-                                <th scope="col" class="px-2 sm:px-3 py-2 text-center">PC</th>
-                            </tr>
-                        </thead>
-                        <tbody id="units-list-table-body" class="divide-y divide-gray-700">
-                            <!-- Contenido inyectado por JavaScript -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-gray-900 mt-8 sm:mt-12 py-8 text-center text-sm text-gray-500 px-4">
-        <p>&copy; 2025 Campaña "El Crisol de Varrus".</p>
-    </footer>
-
 </body>
 </html>

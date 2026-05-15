@@ -1,187 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>COGITATOR: EL CRISOL DE VARRUS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="globals.css">
     <style>
-        :root {
-            --primary: #ff2222; /* Rojo para esta campaña de traición */
-            --primary-dim: #881111;
-            --primary-glow: rgba(255, 34, 34, 0.25);
-            --secondary: #ffaa00;
-            --bg-dark: #0a0505;
-            --bg-panel: rgba(15, 5, 5, 0.9);
-            --border: #2e0d0d;
-            --border-bright: #5c1a1a;
-            --text-main: #ffcccc;
-            --text-dim: #602a2a;
-            --danger: #ff2222;
-            --success: #00ff41;
-            --info: #00aaff;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Share Tech Mono', monospace;
-            background: var(--bg-dark);
-            color: var(--text-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-            cursor: crosshair;
-        }
-
-        /* SCANLINES & NOISE */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.2) 2px, rgba(0,0,0,0.2) 4px);
-            pointer-events: none;
-            z-index: 10000;
-            animation: scanroll 10s linear infinite;
-        }
-
-        @keyframes scanroll {
-            0% { background-position: 0 0; }
-            100% { background-position: 0 100px; }
-        }
-
-        .hud-vignette {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: radial-gradient(circle, transparent 40%, rgba(10,5,5,0.8) 100%);
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* HEADER */
-        .main-header {
-            border-bottom: 2px solid var(--border);
-            padding: 2rem;
-            text-align: center;
-            position: relative;
-            background: linear-gradient(to bottom, rgba(255,34,34,0.1), transparent);
-            backdrop-filter: blur(5px);
-        }
-
-        .main-header::after {
-            content: '';
-            position: absolute;
-            bottom: 0; left: 0; width: 100%; height: 1px;
-            background: var(--primary);
-            box-shadow: 0 0 15px var(--primary);
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        .title-container h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
-            letter-spacing: 0.5rem;
-            color: var(--primary);
-            text-shadow: 0 0 10px var(--primary), 0 0 20px rgba(255,34,34,0.5);
-            animation: flicker 5s infinite;
-        }
-
-        @keyframes flicker {
-            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-            20%, 22%, 24%, 55% { opacity: 0.7; }
-        }
-
-        .sub-readout {
-            font-size: 0.8rem;
-            color: var(--text-dim);
-            letter-spacing: 0.2rem;
-            margin-top: 0.5rem;
-        }
-
-        /* NAVIGATION */
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            background: rgba(0,0,0,0.5);
-            border-bottom: 1px solid var(--border);
-            padding: 0.5rem;
-        }
-
-        .nav-tab {
-            padding: 0.8rem 1.5rem;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            letter-spacing: 0.1rem;
-            cursor: pointer;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-
-        .nav-tab:hover {
-            color: var(--primary);
-            background: var(--primary-glow);
-        }
-
-        .nav-tab.active {
-            color: var(--text-main);
-            border: 1px solid var(--primary);
-            background: var(--primary-glow);
-            box-shadow: inset 0 0 10px var(--primary-glow);
-        }
-
-        /* SECTIONS */
-        .content-container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-            display: none;
-        }
-
-        .content-container.active {
-            display: block;
-        }
-
-        .panel {
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            position: relative;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            margin-bottom: 2rem;
-        }
-
-        .panel::before, .panel::after {
-            content: '';
-            position: absolute;
-            width: 15px; height: 15px;
-            border: 2px solid var(--primary);
-        }
-        .panel::before { top: -2px; left: -2px; border-right: none; border-bottom: none; }
-        .panel::after { bottom: -2px; right: -2px; border-left: none; border-top: none; }
-
-        .panel-header {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
-            color: var(--primary);
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 1rem;
-            padding-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* MAPA ESQUEMÁTICO (BLUEPRINT STYLE) */
+        /* Specific styles for the Map that are too detailed for globals.css */
         #map-container {
             position: relative;
             width: 100%;
-            height: 700px;
+            height: 800px;
             background-color: #050a10;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 170, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 170, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(rgba(0, 170, 255, 0.1) 2px, transparent 2px),
@@ -207,16 +43,19 @@
 
         .hex-grid {
             position: relative;
-            width: 900px;
-            height: 600px;
+            width: 1000px;
+            height: 700px;
+            transform: scale(0.8);
         }
 
         .hexagon {
             position: absolute;
-            width: 120px;
-            height: 138px;
+            width: 100px;
+            height: 100px;
+            /* Altura original para mantener proporciones */
             background: rgba(0, 170, 255, 0.05);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            /* Clip-path ajustado para hexágono rotado (flat-top) */
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -225,107 +64,74 @@
             transition: 0.3s;
             border: 1px solid rgba(0, 170, 255, 0.3);
             text-align: center;
-            padding: 10px;
+            padding: 5px;
             backdrop-filter: blur(2px);
         }
 
         .hexagon:hover {
-            background: rgba(0, 170, 255, 0.15);
-            transform: scale(1.05);
-            z-index: 10;
+            background: rgba(0, 170, 255, 0.25);
+            transform: scale(1.1);
+            z-index: 100;
             border-color: var(--info);
-            box-shadow: 0 0 20px rgba(0, 170, 255, 0.2);
+            box-shadow: 0 0 30px var(--info);
         }
 
         .hex-label {
-            font-size: 0.65rem;
+            font-size: 0.6rem;
             font-weight: 700;
             color: #fff;
             text-transform: uppercase;
             pointer-events: none;
             text-shadow: 0 0 5px #000;
+            rotate: 0deg;
+            /* Rotación inversa para compensar los 90deg del hexágono */
+            width: 100px;
         }
 
         .hex-status {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: var(--info);
-            margin-top: 5px;
-            font-weight: 400;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 2px 4px;
+            margin-top: 2px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1px 3px;
+            rotate: -90deg;
+            /* Rotación inversa */
         }
 
-        /* Colores de Dominancia en Hexágonos */
-        .hex-sm { border: 2px solid #00aaff; background: rgba(0, 170, 255, 0.1); }
-        .hex-sm .hex-status { color: #00aaff; }
-
-        .hex-ig { border: 2px solid #00ff41; background: rgba(0, 255, 65, 0.1); }
-        .hex-ig .hex-status { color: #00ff41; }
-
-        .hex-we { border: 2px solid #ff2222; background: rgba(255, 34, 34, 0.1); }
-        .hex-we .hex-status { color: #ff2222; }
-
-        .hex-dr { border: 2px solid #aa00ff; background: rgba(170, 0, 255, 0.1); }
-        .hex-dr .hex-status { color: #aa00ff; }
-
-        .hex-contested { border: 2px dashed #ffff00; animation: pulse-border 2s infinite; }
-        @keyframes pulse-border {
-            0%, 100% { border-color: rgba(255, 255, 0, 0.3); }
-            50% { border-color: rgba(255, 255, 0, 1); }
+        /* Faction Colors based on Mapa_deseado.png */
+        .cluster-red {
+            background: rgba(255, 34, 34, 0.1);
+            border-color: #ff2222;
         }
 
-        /* FACTION CARDS */
-        .factions-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
+        .cluster-red-bright {
+            background: rgba(255, 34, 34, 0.3);
+            border-color: #ff0000;
+            box-shadow: 0 0 15px #ff2222;
         }
 
-        .faction-card {
-            background: var(--bg-panel);
-            border: 1px solid var(--border);
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: 0.3s;
-            text-decoration: none;
-            color: inherit;
+        .cluster-blue {
+            background: rgba(0, 170, 255, 0.1);
+            border-color: #00aaff;
         }
 
-        .faction-card:hover {
-            border-color: var(--primary);
-            background: var(--primary-glow);
-            transform: translateY(-5px);
+        .cluster-blue-bright {
+            background: rgba(0, 170, 255, 0.3);
+            border-color: #00ffff;
+            box-shadow: 0 0 15px #00aaff;
         }
 
-        .faction-icon {
-            width: 60px; height: 60px;
-            display: flex; align-items: center; justify-content: center;
+        .cluster-green {
+            background: rgba(0, 255, 65, 0.1);
+            border-color: #00ff41;
         }
 
-        .faction-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        .cluster-green-bright {
+            background: rgba(0, 255, 65, 0.3);
+            border-color: #00ff41;
+            box-shadow: 0 0 15px #00ff41;
         }
 
-        .faction-info h4 { font-family: 'Orbitron', sans-serif; font-size: 1rem; color: var(--primary); }
-        .faction-info p { font-size: 0.75rem; color: var(--text-dim); }
-
-        /* LORE CONTENT */
-        .lore-text {
-            font-size: 1rem;
-            line-height: 1.6;
-            color: var(--text-main);
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .lore-text strong { color: var(--primary); }
-        .lore-text p { margin-bottom: 1.5rem; }
-
-        /* VOX LOG */
         #vox-log {
             background: #000;
             padding: 1rem;
@@ -335,13 +141,11 @@
             font-size: 0.8rem;
             color: var(--success);
             margin-top: 2rem;
+            font-family: 'Share Tech Mono', monospace;
         }
-
-        .log-entry { margin-bottom: 0.3rem; }
-        .log-time { color: var(--text-dim); margin-right: 10px; }
-
     </style>
 </head>
+
 <body class="antialiased">
     <div class="hud-vignette"></div>
 
@@ -357,68 +161,150 @@
         <div class="nav-tab" onclick="showSection('lore')">Archivos de Cruzada</div>
         <div class="nav-tab" onclick="showSection('factions')">Fuerzas de Combate</div>
         <div class="nav-tab" onclick="showSection('rules')">Reglas</div>
-    </nav>    <!-- SECTION: MAP -->
+    </nav>
+
+    <!-- SECTION: MAP -->
     <main id="section-map" class="content-container active">
         <section class="panel">
             <div class="panel-header">
                 <span>TACTICAL MAP: HEPHAESTOS VII</span>
                 <span>STATUS: CONTESTED</span>
             </div>
-            
+
             <div id="map-container">
-                <div class="hex-grid">
-                    <!-- 1. Aguja Adamantina (Centro) -->
-                    <div class="hexagon hex-contested" style="top: 230px; left: 390px; width: 140px; height: 160px;" onclick="addLog('SECTOR: AGUJA ADAMANTINA - Estatus: Sitiada')">
-                        <span class="hex-label">AGUJA ADAMANTINA</span>
-                        <span class="hex-status">SITIADA</span>
+                <div class="hex-grid" style="transform: scale(0.85); width: 1000px; height: 800px;">
+                    <!-- DISPOSICIÓN MATEMÁTICA (FLAT-TOP 100px): 
+                         Ancho hex = 100px
+                         Desplazamiento H entre columnas = 75px
+                         Desplazamiento V entre filas = 100px
+                         Desplazamiento V entre columnas adyacentes = 50px
+                    -->
+
+                    <!-- CHAOS CLUSTER (Norte - Rojo) -->
+                    <div class="hexagon cluster-red-bright" style="top: 200px; left: 500px;"
+                        onclick="addLog('NÚCLEO: EL TRONO DE CRÁNEOS')">
+                        <span class="hex-label" style="color:#ff2222;">TRONO DE CRÁNEOS</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 100px; left: 500px;"
+                        onclick="addLog('SECTOR: CATEDRAL DE LA AGONÍA')">
+                        <span class="hex-label">CAT. AGONÍA</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 150px; left: 425px;"
+                        onclick="addLog('SECTOR: FOSAS DE SACRIFICIO')">
+                        <span class="hex-label">FOSAS SACRIFICIO</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 150px; left: 575px;"
+                        onclick="addLog('SECTOR: ALTAR DE LATÓN')">
+                        <span class="hex-label">ALTAR LATÓN</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 250px; left: 425px;"
+                        onclick="addLog('SECTOR: FORJA DE ALMAS')">
+                        <span class="hex-label">FORJA ALMAS</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 250px; left: 575px;"
+                        onclick="addLog('SECTOR: BALUARTE DE HIERRO')">
+                        <span class="hex-label">BALUARTE HIERRO</span>
+                    </div>
+                    <div class="hexagon cluster-red" style="top: 300px; left: 500px;"
+                        onclick="addLog('SECTOR: BRECHA DEL DISFORME')">
+                        <span class="hex-label">BRECHA DISFORME</span>
+                    </div>
+                    <div class="hexagon cluster-red-bright" style="top: 50px; left: 425px;"
+                        onclick="addLog('SECTOR: CUMBRES DEL DOLOR')">
+                        <span class="hex-label">CUMBRES DOLOR</span>
+                    </div>
+                    <div class="hexagon cluster-red-bright" style="top: 50px; left: 575px;"
+                        onclick="addLog('SECTOR: ABISMO OSCURO')">
+                        <span class="hex-label">ABISMO OSCURO</span>
                     </div>
 
-                    <!-- 2. Túneles Gamma -->
-                    <div class="hexagon hex-sm" style="top: 100px; left: 280px;" onclick="addLog('SECTOR: TÚNELES GAMMA - Dominancia: Raven Guard')">
+                    <!-- IMPERIUM CLUSTER (Suroeste - Azul) -->
+                    <!-- Centro del Cluster Imperium: 400, 425 -->
+                    <div class="hexagon cluster-blue-bright" style="top: 450px; left: 425px;"
+                        onclick="addLog('NÚCLEO: BASTIÓN DEL EMPERADOR')">
+                        <span class="hex-label" style="color:#00ffff;">BASTIÓN CENTRAL</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 350px; left: 425px;"
+                        onclick="addLog('SECTOR: PUERTO DE ARRIBO SIGMA')">
+                        <span class="hex-label">PUERTO SIGMA</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 400px; left: 350px;"
+                        onclick="addLog('SECTOR: ARMADURÍA DE HEPHAESTOS')">
+                        <span class="hex-label">ARMADURÍA FORJA</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 400px; left: 500px;"
+                        onclick="addLog('SECTOR: DEPÓSITO DE PROMETIUM')">
+                        <span class="hex-label">DEP. PROMETIUM</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 500px; left: 350px;"
+                        onclick="addLog('SECTOR: ANTENA VOX DE LARGO ALCANCE')">
+                        <span class="hex-label">RELE VOX</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 500px; left: 500px;"
+                        onclick="addLog('SECTOR: BATERÍA DE DEFENSA ICARUS')">
+                        <span class="hex-label">BATERÍA ICARUS</span>
+                    </div>
+                    <div class="hexagon cluster-blue-bright" style="top: 600px; left: 350px;"
+                        onclick="addLog('SECTOR: CAMPAMENTO DE AVANZADA 501')">
+                        <span class="hex-label">AVANZADA 501</span>
+                    </div>
+                    <div class="hexagon cluster-blue-bright" style="top: 450px; left: 275px;"
+                        onclick="addLog('SECTOR: ZONA DE IMPACTO EPSILON')">
+                        <span class="hex-label">ZONA EPSILON</span>
+                    </div>
+                    <div class="hexagon cluster-blue" style="top: 550px; left: 425px;"
+                        onclick="addLog('SECTOR: TÚNELES DE REFRIGERACIÓN GAMMA')">
                         <span class="hex-label">TÚNELES GAMMA</span>
-                        <span class="hex-status">DOM-RG</span>
                     </div>
 
-                    <!-- 3. Páramos de Ceniza -->
-                    <div class="hexagon hex-we" style="top: 150px; left: 550px;" onclick="addLog('SECTOR: PÁRAMOS DE CENIZA - Dominancia: World Eaters')">
-                        <span class="hex-label">PÁRAMOS DE CENIZA</span>
-                        <span class="hex-status">DOM-WE</span>
+                    <!-- XENOS CLUSTER (Sureste - Verde) -->
+                    <!-- Centro del Cluster Xenos: 650, 400 -->
+                    <div class="hexagon cluster-green-bright" style="top: 400px; left: 650px;"
+                        onclick="addLog('NÚCLEO: NODO DE MENTE COLMENA')">
+                        <span class="hex-label" style="color:#00ff41;">NODO BIOMASA</span>
                     </div>
-
-                    <!-- 4. Fábrica de Blindados -->
-                    <div class="hexagon hex-ig" style="top: 380px; left: 500px;" onclick="addLog('SECTOR: FÁBRICA DE BLINDADOS - Dominancia: Astra Militarum')">
-                        <span class="hex-label">FÁBRICA DE BLINDADOS</span>
-                        <span class="hex-status">DOM-AM</span>
+                    <div class="hexagon cluster-green" style="top: 300px; left: 650px;"
+                        onclick="addLog('SECTOR: JARDINES DE ESPORAS')">
+                        <span class="hex-label">JARDÍN ESPORAS</span>
                     </div>
-
-                    <!-- 5. 501º Cadian -->
-                    <div class="hexagon hex-ig" style="top: 350px; left: 220px;" onclick="addLog('SECTOR: 501º CADIAN - Zona de Aterrizaje')">
-                        <span class="hex-label">501º CADIAN</span>
-                        <span class="hex-status">DOM-AM</span>
+                    <div class="hexagon cluster-green" style="top: 350px; left: 575px;"
+                        onclick="addLog('SECTOR: VALLE DE LAS QUIMERAS')">
+                        <span class="hex-label">VALLE QUIMERAS</span>
                     </div>
-
-                    <!-- 6. Sector Secundario A -->
-                    <div class="hexagon" style="top: 50px; left: 450px;" onclick="addLog('SECTOR: SEC-01 - Exploración en curso')">
-                        <span class="hex-label">SEC-01</span>
-                        <span class="hex-status">NEUTRAL</span>
+                    <div class="hexagon cluster-green" style="top: 350px; left: 725px;"
+                        onclick="addLog('SECTOR: NIDAL TÁCTICO')">
+                        <span class="hex-label">NIDAL XENOS</span>
                     </div>
-
-                    <!-- 7. Sector Secundario B -->
-                    <div class="hexagon hex-dr" style="top: 300px; left: 700px;" onclick="addLog('SECTOR: SEC-02 - Presencia Xenos Detectada')">
-                        <span class="hex-label">SEC-02</span>
-                        <span class="hex-status">DOM-DR</span>
+                    <div class="hexagon cluster-green" style="top: 450px; left: 575px;"
+                        onclick="addLog('SECTOR: PÁRAMOS DE INFESTACIÓN')">
+                        <span class="hex-label">PÁRAMOS INFEST.</span>
                     </div>
-
-                    <!-- 8. Sector Secundario C -->
-                    <div class="hexagon" style="top: 450px; left: 350px;" onclick="addLog('SECTOR: SEC-03 - Ruinas Industriales')">
-                        <span class="hex-label">SEC-03</span>
-                        <span class="hex-status">DESIERTO</span>
+                    <div class="hexagon cluster-green" style="top: 450px; left: 725px;"
+                        onclick="addLog('SECTOR: NODO DE TRANSMISIÓN JADE')">
+                        <span class="hex-label">NODO JADE</span>
+                    </div>
+                    <div class="hexagon cluster-green-bright" style="top: 550px; left: 725px;"
+                        onclick="addLog('SECTOR: SALIDA DEL LABERINTO')">
+                        <span class="hex-label">LABERINTO XENOS</span>
+                    </div>
+                    <div class="hexagon cluster-green-bright" style="top: 400px; left: 800px;"
+                        onclick="addLog('SECTOR: RUINAS DE LA FÁBRICA')">
+                        <span class="hex-label">RUINAS FORJA</span>
+                    </div>
+                    <div class="hexagon cluster-green" style="top: 500px; left: 650px;"
+                        onclick="addLog('SECTOR: CAÑÓN DEL HORROR')">
+                        <span class="hex-label">CAÑÓN HORROR</span>
                     </div>
                 </div>
             </div>
+            </div>
+            </div>
+            </div>
+            </div>
 
             <div id="vox-log">
-                <div class="log-entry"><span class="log-time">[INIT]</span> Cogitator boot sequence complete. Tracking Hephaestos VII sectors...</div>
+                <div class="log-entry"><span class="log-time">[INIT]</span> Cogitator boot sequence complete. Tracking
+                    Hephaestos VII sectors...</div>
             </div>
         </section>
     </main>
@@ -428,31 +314,10 @@
         <section class="panel">
             <div class="panel-header">ARCHIVOS DE CRUZADA: EL MUNDO FORJA MANCHADO</div>
             <div class="lore-text">
-                <p><strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus vastas colmenas-forja producen armas y blindados para una docena de cruzadas imperiales.</p>
-                <p>Pero guarda un secreto: está gobernado por el <strong>Gobernador Kael Varrus</strong>, quien ha forjado un pacto oscuro con los <strong>Drukhari</strong> a cambio de elixires de vida, entregando a cambio miles de trabajadores como esclavos.</p>
-            </div>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">REGISTROS: FIN DEL ACTO I</div>
-            <div class="factions-grid">
-                <div class="panel" style="margin-bottom:0;">
-                    <h4 style="color:var(--primary); margin-bottom:10px;">BATALLA 1: ASALTO A LA AGUJA</h4>
-                    <p style="font-size:0.85rem; color:var(--text-dim);">RAVEN GUARD VS ASTRA MILITARUM</p>
-                    <p style="font-size:0.9rem; margin-top:10px;">La Raven Guard tomó la Aguja, pero el Gobernador Varrus escapó. La Guardia mantiene su lealtad al traidor.</p>
-                </div>
-                <div class="panel" style="margin-bottom:0;">
-                    <h4 style="color:var(--primary); margin-bottom:10px;">BATALLA 2: COSECHA INTERRUMPIDA</h4>
-                    <p style="font-size:0.85rem; color:var(--text-dim);">WORLD EATERS VS DRUKHARI</p>
-                    <p style="font-size:0.9rem; margin-top:10px;">Los World Eaters masacraron a los Drukhari. La Succubus Jynx jura venganza contra Varrus.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="panel">
-            <div class="panel-header">ACTO II: EL ASIEDO Y LA VENGANZA</div>
-            <div class="lore-text">
-                <p>El campo de batalla se ha fracturado. Dos conflictos determinarán quién dominará el Mundo Forja: el asedio a la capital por los World Eaters y la cacería de Varrus por parte de los Drukhari.</p>
+                <p><strong>Hephaestos VII</strong> brilla como una joya de la industria en el Segmentum Pacificus. Sus
+                    vastas colmenas-forja producen armas y blindados para una docena de cruzadas imperiales.</p>
+                <p>Pero guarda un secreto: está gobernado por el Gobernador Varrus, quien ha forjado un pacto oscuro con
+                    los Drukhari.</p>
             </div>
         </section>
     </main>
@@ -464,32 +329,28 @@
                 <div class="faction-icon"><img src="Imagenes/raven_guard.png" alt="RG"></div>
                 <div class="faction-info">
                     <h4>SPACE MARINES</h4>
-                    <p>Fuerza: Raven Guard</p>
-                    <p>Estatus: Asegurando la Aguja</p>
+                    <p>Raven Guard</p>
                 </div>
             </a>
             <a href="ob_ig.html" class="faction-card">
                 <div class="faction-icon"><img src="Imagenes/imperial_guard.png" alt="IG"></div>
                 <div class="faction-info">
                     <h4>ASTRA MILITARUM</h4>
-                    <p>Fuerza: 501º Cadian</p>
-                    <p>Estatus: Leales a Varrus</p>
+                    <p>501º Cadian</p>
                 </div>
             </a>
             <a href="ob_we.html" class="faction-card">
                 <div class="faction-icon"><img src="Imagenes/world_eaters.png" alt="WE"></div>
                 <div class="faction-info">
                     <h4>WORLD EATERS</h4>
-                    <p>Fuerza: Hueste de Agnus</p>
-                    <p>Estatus: En Frenesí</p>
+                    <p>Hueste de Agnus</p>
                 </div>
             </a>
             <a href="ob_dru.html" class="faction-card">
                 <div class="faction-icon"><img src="Imagenes/drukhari.png" alt="DR"></div>
                 <div class="faction-info">
                     <h4>DRUKHARI</h4>
-                    <p>Fuerza: Cábala del Ojo Roto</p>
-                    <p>Estatus: Retirada Táctica</p>
+                    <p>Cábala del Ojo Roto</p>
                 </div>
             </a>
         </div>
@@ -499,17 +360,15 @@
     <main id="section-rules" class="content-container">
         <div class="factions-grid">
             <a href="reglas_a.html" class="faction-card">
-                <div class="faction-icon"><i class="fas fa-scroll fa-2x" style="color:var(--primary);"></i></div>
+                <div class="faction-icon"><i class="fas fa-scroll fa-2x"></i></div>
                 <div class="faction-info">
                     <h4>REGLAS ADICIONALES</h4>
-                    <p>Protocolos de Batalla y Estratagemas</p>
                 </div>
             </a>
             <a href="progresion.html" class="faction-card">
-                <div class="faction-icon"><i class="fas fa-trophy fa-2x" style="color:var(--primary);"></i></div>
+                <div class="faction-icon"><i class="fas fa-trophy fa-2x"></i></div>
                 <div class="faction-info">
                     <h4>PROGRESIÓN</h4>
-                    <p>Agendas y Puntos de Victoria</p>
                 </div>
             </a>
         </div>
@@ -525,17 +384,19 @@
             });
 
             document.getElementById('section-' + sectionId).classList.add('active');
-            event.currentTarget.classList.add('active');
+            if (event) event.currentTarget.classList.add('active');
 
             addLog("Módulo activado: " + sectionId.toUpperCase());
         }
 
         function addLog(message) {
             const log = document.getElementById('vox-log');
+            if (!log) return;
             const time = new Date().toLocaleTimeString();
             log.innerHTML += `<div class="log-entry"><span class="log-time">[${time}]</span> ${message}</div>`;
             log.scrollTop = log.scrollHeight;
         }
     </script>
 </body>
+
 </html>
